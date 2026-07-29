@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Trailing Cursor ───────────────────────────────────────────
     const cursorDot   = document.getElementById('cursorDot');
-    const trailColors = ['#3b82f6','#60a5fa','#6366f1','#818cf8','#0ea5e9','#38bdf8'];
+    const trailColors = ['#8b5cf6','#a78bfa','#6366f1','#3b82f6','#60a5fa','#c084fc'];
     let lastTrailX = 0, lastTrailY = 0;
     const MIN_DIST = 12;
     let cursorReady = false;
@@ -500,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scroll Reveal Animation
     const revealElements = document.querySelectorAll('.about-content, .about-visual, .skill-card, .contact-card');
     
-    const revealObserver = new IntersectionObserver((entries) => {
+    const revealElementsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '0';
@@ -510,12 +510,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
                 }, 100);
-                revealObserver.unobserve(entry.target);
+                revealElementsObserver.unobserve(entry.target);
             }
         });
     }, { threshold: 0.1 });
     
-    revealElements.forEach(el => revealObserver.observe(el));
+    revealElements.forEach(el => revealElementsObserver.observe(el));
     
     console.log('Portfolio initialized successfully!');
 });
