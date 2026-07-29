@@ -368,7 +368,7 @@ a, button, [role="button"] { cursor: none; }
 /* --- Progress Bar --- */
 .loader-progress-wrap {
     width: 200px;
-    height: 2px;
+    height: 3px;
     background: rgba(255,255,255,0.08);
     border-radius: 99px;
     overflow: hidden;
@@ -377,12 +377,20 @@ a, button, [role="button"] { cursor: none; }
 .loader-progress-bar {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #2563eb, #7c3aed, #0891b2);
-    background-size: 200% 100%;
+    background: linear-gradient(90deg, #2563eb, #6366f1, #38bdf8, #2563eb);
+    background-size: 300% 100%;
     border-radius: 99px;
-    transition: width 0.1s linear;
-    animation: loaderShimmer 1.5s linear infinite;
+    /* Fill from 0→100% — CSS drives this, not JS */
+    animation:
+        loaderFill    1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+        loaderShimmer 1.2s linear infinite;
 }
+
+@keyframes loaderFill {
+    from { width: 0%; }
+    to   { width: 100%; }
+}
+
 
 .loader-percent {
     font-size: 0.72rem;

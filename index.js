@@ -1,64 +1,56 @@
 // Professional Portfolio JavaScript
 
 // ─── Loading Screen ──────────────────────────────────────────────
-const loadingScreen  = document.getElementById('loadingScreen');
-const progressBar    = document.getElementById('loaderProgress');
-const percentLabel   = document.getElementById('loaderPercent');
+const loadingScreen = document.getElementById('loadingScreen');
+const percentLabel  = document.getElementById('loaderPercent');
 
 /** Hide the loading screen with a smooth fade-out */
 function hideLoader() {
     if (!loadingScreen || loadingScreen.classList.contains('hidden')) return;
-    // Fill bar to 100% instantly before fading
-    if (progressBar)  progressBar.style.width = '100%';
     if (percentLabel) percentLabel.textContent = '100%';
-
     setTimeout(() => {
         loadingScreen.classList.add('hidden');
-        // After transition completes, fully remove from layout
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 750);
-    }, 150);
+        setTimeout(() => { loadingScreen.style.display = 'none'; }, 750);
+    }, 200);
 }
 
-/** Animate the progress bar from 0 → 100 over ~1400ms */
-function animateProgress() {
-    let pct = 0;
-    // Ease-in curve: slow start, fast end
-    const steps = [
-        { target: 30,  delay: 8  },
-        { target: 60,  delay: 12 },
-        { target: 80,  delay: 20 },
-        { target: 95,  delay: 35 },
-        { target: 100, delay: 0  }
-    ];
-    let stepIdx = 0;
+/**
+ * Drive the 0→100 counter using requestAnimationFrame so it
+ * stays perfectly in sync with the screen's repaint cycle.
+ * The progress BAR width is driven by a CSS keyframe animation
+ * (declared in index.css) — no JS width-setting needed.
+ */
+function startCounter() {
+    const DURATION = 1600; // ms — must match CSS animation duration
+    const startTime = performance.now();
 
-    function tick() {
-        if (stepIdx >= steps.length) { hideLoader(); return; }
-        const { target, delay } = steps[stepIdx];
+    function frame(now) {
+        const elapsed  = now - startTime;
+        const progress = Math.min(elapsed / DURATION, 1);
+        // Cubic ease-out so the counter slows towards 100
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const pct   = Math.round(eased * 100);
 
-        if (pct < target) {
-            pct++;
-            if (progressBar)  progressBar.style.width = pct + '%';
-            if (percentLabel) percentLabel.textContent  = pct + '%';
-            setTimeout(tick, delay);
+        if (percentLabel) percentLabel.textContent = pct + '%';
+
+        if (progress < 1) {
+            requestAnimationFrame(frame);
         } else {
-            stepIdx++;
-            setTimeout(tick, delay);
+            // Counter reached 100 — hide the loader
+            hideLoader();
         }
     }
-    tick();
+    requestAnimationFrame(frame);
 }
 
-// Start the animated progress immediately on script parse
-animateProgress();
+// Kick off counter as soon as the script runs
+startCounter();
 
-// Failsafe A: hide when the whole page finishes loading
+// Failsafe A — page fully loaded
 window.addEventListener('load', hideLoader);
+// Failsafe B — hard cap 6 s
+setTimeout(hideLoader, 6000);
 
-// Failsafe B: hard cap — force-hide after 5 s no matter what
-setTimeout(hideLoader, 5000);
 
 // ─── Main Portfolio Initialisation ───────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
