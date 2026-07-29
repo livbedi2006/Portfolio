@@ -63,25 +63,120 @@ setTimeout(hideLoader, 5000);
 // ─── Main Portfolio Initialisation ───────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing portfolio...');
-    
-    // Theme Toggle
+
+    // ── Theme Toggle ──────────────────────────────────────────────
     const themeToggle = document.getElementById('themeToggle');
     const html = document.documentElement;
-    
-    // Check for saved theme preference or default to dark
     const savedTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
-    
+
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         });
     }
-    
+
+    // ── Trailing Cursor ───────────────────────────────────────────
+    const cursorDot   = document.getElementById('cursorDot');
+    const trailColors = ['#3b82f6','#60a5fa','#6366f1','#818cf8','#0ea5e9','#38bdf8'];
+    let   mouseX = -100, mouseY = -100;
+    let   lastTrailX = 0, lastTrailY = 0;
+    const MIN_DIST = 12; // px between trail particles
+
+    // Move main dot instantly
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        if (cursorDot) {
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top  = mouseY + 'px';
+        }
+
+        // Spawn trail particle if moved far enough
+        const dx = mouseX - lastTrailX;
+        const dy = mouseY - lastTrailY;
+        if (Math.sqrt(dx*dx + dy*dy) > MIN_DIST) {
+            spawnTrail(mouseX, mouseY);
+            lastTrailX = mouseX;
+            lastTrailY = mouseY;
+        }
+    });
+
+    function spawnTrail(x, y) {
+        const p = document.createElement('div');
+        p.className = 'trail-particle';
+        const color = trailColors[Math.floor(Math.random() * trailColors.length)];
+        p.style.cssText = `
+            left: ${x}px;
+            top: ${y}px;
+            background: ${color};
+            box-shadow: 0 0 6px ${color};
+            width:  ${4 + Math.random() * 4}px;
+            height: ${4 + Math.random() * 4}px;
+        `;
+        document.body.appendChild(p);
+        // Remove after animation ends
+        p.addEventListener('animationend', () => p.remove());
+    }
+
+    // Cursor grows on hover over interactive elements
+    const interactives = document.querySelectorAll('a, button, .filter-btn, .skill-card, .project-card, .social-link, .contact-card, .tag');
+    interactives.forEach(el => {
+        el.addEventListener('mouseenter', () => cursorDot && cursorDot.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => cursorDot && cursorDot.classList.remove('hovering'));
+    });
+
+    // Hide dot when mouse leaves window
+    document.addEventListener('mouseleave', () => { if (cursorDot) cursorDot.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { if (cursorDot) cursorDot.style.opacity = '1'; });
+
+    // ── Scroll Reveal Observer ────────────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // ── Hero entrance animations ──────────────────────────────────
+    const heroBadge    = document.querySelector('.hero-badge');
+    const heroTitle    = document.querySelector('.hero-title');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    const heroStats    = document.querySelector('.hero-stats');
+    const heroCta      = document.querySelector('.hero-cta');
+    const heroVisual   = document.querySelector('.hero-visual');
+
+    [heroBadge, heroTitle, heroSubtitle, heroStats, heroCta].forEach((el, i) => {
+        if (!el) return;
+        el.style.opacity   = '0';
+        el.style.transform = 'translateY(28px)';
+        el.style.transition= 'opacity 0.7s ease, transform 0.7s ease';
+        setTimeout(() => {
+            el.style.opacity   = '1';
+            el.style.transform = 'none';
+        }, 400 + i * 130);
+    });
+
+    if (heroVisual) {
+        heroVisual.style.opacity   = '0';
+        heroVisual.style.transform = 'translateX(30px)';
+        heroVisual.style.transition= 'opacity 0.9s ease, transform 0.9s ease';
+        setTimeout(() => {
+            heroVisual.style.opacity   = '1';
+            heroVisual.style.transform = 'none';
+        }, 700);
+    }
+
+
     // Navigation Scroll Effect
     const navbar = document.getElementById('navbar');
     
