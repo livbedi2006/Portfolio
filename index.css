@@ -732,6 +732,24 @@ body.custom-cursor .filter-btn {
     -webkit-text-fill-color: transparent;
 }
 
+.typing-cursor {
+    display: inline-block;
+    width: 4px;
+    margin-left: 2px;
+    color: var(--primary);
+    animation: blink 1s step-end infinite;
+    -webkit-text-fill-color: initial;
+}
+
+.typing-cursor.typing {
+    animation: none;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
 .hero-subtitle {
     font-size: 1.1rem;
     color: var(--text-secondary);
