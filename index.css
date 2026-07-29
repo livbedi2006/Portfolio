@@ -725,6 +725,10 @@ body.custom-cursor .filter-btn {
     color: var(--text-primary);
 }
 
+.typed-text {
+    white-space: pre-wrap;
+}
+
 .title-gradient {
     background: var(--gradient-1);
     -webkit-background-clip: text;

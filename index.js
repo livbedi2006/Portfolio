@@ -416,33 +416,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             projectsGrid.innerHTML = projectsToDisplay.map(createProjectCard).join('');
             
-            // Add animation to cards
-            const cards = projectsGrid.querySelectorAll('.project-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.transition = 'all 0.5s ease-out';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
+            // Apply default active filter
+            const activeFilterBtn = document.querySelector('.filter-btn.active');
+            if (activeFilterBtn) activeFilterBtn.click();
             
         } catch (error) {
             console.error('Error fetching GitHub projects:', error);
             // Use fallback projects on error
             projectsGrid.innerHTML = fallbackProjects.map(createProjectCard).join('');
             
-            const cards = projectsGrid.querySelectorAll('.project-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.transition = 'all 0.5s ease-out';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
+            const activeFilterBtn = document.querySelector('.filter-btn.active');
+            if (activeFilterBtn) activeFilterBtn.click();
         }
     };
     
@@ -461,6 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const filter = btn.getAttribute('data-filter');
             const cards = projectsGrid.querySelectorAll('.project-card');
             
+            let visibleIndex = 0;
             cards.forEach(card => {
                 const category = card.getAttribute('data-category');
                 
@@ -469,9 +454,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.style.opacity = '0';
                     card.style.transform = 'translateY(20px)';
                     setTimeout(() => {
+                        card.style.transition = 'all 0.5s ease-out';
                         card.style.opacity = '1';
                         card.style.transform = 'translateY(0)';
-                    }, 50);
+                    }, 50 + (visibleIndex * 100));
+                    visibleIndex++;
                 } else {
                     card.style.display = 'none';
                 }
@@ -522,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursorSpan = document.querySelector(".typing-cursor");
 
     if(typedTextSpan && cursorSpan) {
-        const textArray = ["Livjot Singh", "Machine Learning Developer", "AI Engineer"];
+        const textArray = ["Livjot Singh", "Machine Learning\n  Developer", "AI Engineer"];
         const typingDelay = 100;
         const erasingDelay = 50;
         const newTextDelay = 2000;
