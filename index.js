@@ -1,55 +1,40 @@
-// Professional Portfolio JavaScript
+// Portfolio JavaScript
 
-// ─── Loading Screen ──────────────────────────────────────────────
-const loadingScreen = document.getElementById('loadingScreen');
-const percentLabel  = document.getElementById('loaderPercent');
+// =========================================================
+// LOADING SCREEN
+// NOTE: The loading screen is dismissed by a CSS animation
+// (loaderDismiss) as the PRIMARY mechanism. JS is a bonus.
+// =========================================================
 
-/** Hide the loading screen with a smooth fade-out */
-function hideLoader() {
-    if (!loadingScreen || loadingScreen.classList.contains('hidden')) return;
-    if (percentLabel) percentLabel.textContent = '100%';
-    setTimeout(() => {
-        loadingScreen.classList.add('hidden');
-        setTimeout(() => { loadingScreen.style.display = 'none'; }, 750);
-    }, 200);
-}
+(function () {
+    var screen  = document.getElementById('loadingScreen');
+    var label   = document.getElementById('loaderPercent');
+    var done    = false;
 
-/**
- * Drive the 0→100 counter using requestAnimationFrame so it
- * stays perfectly in sync with the screen's repaint cycle.
- * The progress BAR width is driven by a CSS keyframe animation
- * (declared in index.css) — no JS width-setting needed.
- */
-function startCounter() {
-    const DURATION = 1600; // ms — must match CSS animation duration
-    const startTime = performance.now();
-
-    function frame(now) {
-        const elapsed  = now - startTime;
-        const progress = Math.min(elapsed / DURATION, 1);
-        // Cubic ease-out so the counter slows towards 100
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const pct   = Math.round(eased * 100);
-
-        if (percentLabel) percentLabel.textContent = pct + '%';
-
-        if (progress < 1) {
-            requestAnimationFrame(frame);
-        } else {
-            // Counter reached 100 — hide the loader
-            hideLoader();
-        }
+    function hideNow() {
+        if (done) return;
+        done = true;
+        if (screen) screen.classList.add('hidden');
+        setTimeout(function () {
+            if (screen) screen.style.display = 'none';
+        }, 800);
     }
-    requestAnimationFrame(frame);
-}
 
-// Kick off counter as soon as the script runs
-startCounter();
+    // Animate 0 -> 100 counter using setInterval (16ms = ~60fps)
+    var pct = 0;
+    var timer = setInterval(function () {
+        pct++;
+        if (label) label.textContent = pct + '%';
+        if (pct >= 100) {
+            clearInterval(timer);
+            setTimeout(hideNow, 150);
+        }
+    }, 16);   // 100 steps x 16ms = ~1600ms total
 
-// Failsafe A — page fully loaded
-window.addEventListener('load', hideLoader);
-// Failsafe B — hard cap 6 s
-setTimeout(hideLoader, 6000);
+    // Failsafe: force-hide after 4 seconds no matter what
+    setTimeout(hideNow, 4000);
+    window.addEventListener('load', hideNow);
+}());
 
 
 // ─── Main Portfolio Initialisation ───────────────────────────────
