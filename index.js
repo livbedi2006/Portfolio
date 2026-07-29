@@ -59,57 +59,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Trailing Cursor ───────────────────────────────────────────
     const cursorDot   = document.getElementById('cursorDot');
     const trailColors = ['#3b82f6','#60a5fa','#6366f1','#818cf8','#0ea5e9','#38bdf8'];
-    let   mouseX = -100, mouseY = -100;
-    let   lastTrailX = 0, lastTrailY = 0;
-    const MIN_DIST = 12; // px between trail particles
+    let lastTrailX = 0, lastTrailY = 0;
+    const MIN_DIST = 12;
+    let cursorReady = false;
 
-    // Move main dot instantly
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+    document.addEventListener('mousemove', function(e) {
+        var x = e.clientX;
+        var y = e.clientY;
 
         if (cursorDot) {
-            cursorDot.style.left = mouseX + 'px';
-            cursorDot.style.top  = mouseY + 'px';
+            cursorDot.style.left = x + 'px';
+            cursorDot.style.top  = y + 'px';
+
+            // On very first move: reveal dot + hide native cursor
+            if (!cursorReady) {
+                cursorReady = true;
+                document.body.classList.add('custom-cursor');
+                cursorDot.style.opacity = '1';
+                cursorDot.style.transition =
+                    'left 0.06s ease, top 0.06s ease, ' +
+                    'width 0.2s ease, height 0.2s ease, ' +
+                    'background 0.25s ease, opacity 0.3s ease';
+            }
         }
 
-        // Spawn trail particle if moved far enough
-        const dx = mouseX - lastTrailX;
-        const dy = mouseY - lastTrailY;
+        // Trail particles
+        var dx = x - lastTrailX;
+        var dy = y - lastTrailY;
         if (Math.sqrt(dx*dx + dy*dy) > MIN_DIST) {
-            spawnTrail(mouseX, mouseY);
-            lastTrailX = mouseX;
-            lastTrailY = mouseY;
+            spawnTrail(x, y);
+            lastTrailX = x;
+            lastTrailY = y;
         }
     });
 
     function spawnTrail(x, y) {
-        const p = document.createElement('div');
+        var p = document.createElement('div');
         p.className = 'trail-particle';
-        const color = trailColors[Math.floor(Math.random() * trailColors.length)];
-        p.style.cssText = `
-            left: ${x}px;
-            top: ${y}px;
-            background: ${color};
-            box-shadow: 0 0 6px ${color};
-            width:  ${4 + Math.random() * 4}px;
-            height: ${4 + Math.random() * 4}px;
-        `;
+        var color = trailColors[Math.floor(Math.random() * trailColors.length)];
+        var size = (4 + Math.random() * 4).toFixed(1);
+        p.style.cssText =
+            'left:' + x + 'px;' +
+            'top:' + y + 'px;' +
+            'background:' + color + ';' +
+            'box-shadow:0 0 6px ' + color + ';' +
+            'width:' + size + 'px;' +
+            'height:' + size + 'px;';
         document.body.appendChild(p);
-        // Remove after animation ends
-        p.addEventListener('animationend', () => p.remove());
+        p.addEventListener('animationend', function() { p.remove(); });
     }
 
     // Cursor grows on hover over interactive elements
-    const interactives = document.querySelectorAll('a, button, .filter-btn, .skill-card, .project-card, .social-link, .contact-card, .tag');
-    interactives.forEach(el => {
-        el.addEventListener('mouseenter', () => cursorDot && cursorDot.classList.add('hovering'));
-        el.addEventListener('mouseleave', () => cursorDot && cursorDot.classList.remove('hovering'));
+    var interactives = document.querySelectorAll(
+        'a, button, .filter-btn, .skill-card, .project-card, .social-link, .contact-card, .tag'
+    );
+    interactives.forEach(function(el) {
+        el.addEventListener('mouseenter', function() {
+            if (cursorDot) cursorDot.classList.add('hovering');
+        });
+        el.addEventListener('mouseleave', function() {
+            if (cursorDot) cursorDot.classList.remove('hovering');
+        });
     });
 
-    // Hide dot when mouse leaves window
-    document.addEventListener('mouseleave', () => { if (cursorDot) cursorDot.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { if (cursorDot) cursorDot.style.opacity = '1'; });
+    // Hide dot when mouse leaves the viewport
+    document.addEventListener('mouseleave', function() {
+        if (cursorDot) cursorDot.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', function() {
+        if (cursorDot && cursorReady) cursorDot.style.opacity = '1';
+    });
+
+
 
     // ── Scroll Reveal Observer ────────────────────────────────────
     const revealEls = document.querySelectorAll('.reveal');
