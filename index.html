@@ -43,7 +43,7 @@
     </div>
 
     <!-- Animated Background -->
-    <div class="animated-background"></div>
+    <div class="animated-background" id="animated-background"></div>
 
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
@@ -406,8 +406,9 @@
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div class="footer-content">
+    <footer style="position: relative; overflow: hidden;">
+        <div id="ascii-fire-container" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 250px; z-index: 0; opacity: 0.7; pointer-events: none; mix-blend-mode: plus-lighter;"></div>
+        <div class="footer-content" style="position: relative; z-index: 1;">
             <div class="footer-logo">
                 <span class="logo-text">LS</span>
                 <span class="logo-dot"></span>
@@ -422,5 +423,7 @@
     </footer>
 
     <script src="index.js"></script>
+    <script type="module" src="dotted-background.js"></script>
+    <script type="module" src="ascii-fire.js"></script>
 </body>
 </html>
