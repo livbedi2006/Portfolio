@@ -75,6 +75,40 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing portfolio...');
 
+    // ── Smooth Scrolling (Lenis) & Parallax ───────────────────────
+    let lenis;
+    if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        // Parallax elements
+        const parallaxEls = document.querySelectorAll('[data-parallax]');
+        
+        lenis.on('scroll', (e) => {
+            const scrollY = e.scroll;
+            // Update parallax
+            parallaxEls.forEach(el => {
+                const speed = parseFloat(el.getAttribute('data-parallax')) || 0.1;
+                // Use translate3d for hardware acceleration
+                el.style.transform = `translate3d(0, ${scrollY * speed}px, 0)`;
+            });
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    }
+
     // ── Theme Toggle ──────────────────────────────────────────────
     const themeToggle = document.getElementById('themeToggle');
     const html = document.documentElement;
@@ -243,10 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                if (typeof lenis !== 'undefined') {
+                    lenis.scrollTo(target);
+                } else {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             }
         });
     });

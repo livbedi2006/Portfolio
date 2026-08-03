@@ -77,57 +77,56 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="badge-dot"></span>
-                    <span>Available for opportunities</span>
+    <!-- Particle Text Hero Section -->
+    <section class="hero-particle" id="home" style="position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1;">
+        <canvas id="textParticleCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: auto; cursor: crosshair;"></canvas>
+    </section>
+
+    <!-- Intro Section (Moved from old hero) -->
+    <section class="intro" id="intro" style="padding: 6rem 0;">
+        <div class="section-container" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div class="hero-badge" style="justify-content: center; margin-bottom: 2rem;">
+                <span class="badge-dot"></span>
+                <span>Available for opportunities</span>
+            </div>
+            <h1 class="hero-title reveal" style="min-height: 1.5em; font-size: 3rem; margin-bottom: 1.5rem;">
+                <span class="title-line"><span class="typed-text title-gradient"></span><span class="typing-cursor">|</span></span>
+            </h1>
+            <p class="hero-subtitle reveal reveal-delay-1" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem auto;">
+                I'm Livjot Singh, an AI/ML Engineer & Full-Stack Developer crafting intelligent solutions that bridge the gap between human creativity and machine intelligence.
+            </p>
+            <div class="hero-stats reveal reveal-delay-2" style="justify-content: center; margin-bottom: 3rem;">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="10">0</span>
+                    <span class="stat-label">Projects</span>
                 </div>
-                <h1 class="hero-title" style="min-height: 2.5em;">
-                    <span class="title-line"><span class="typed-text title-gradient"></span><span class="typing-cursor">|</span></span>
-                </h1>
-                <p class="hero-subtitle">
-                    I'm Livjot Singh, an AI/ML Engineer & Full-Stack Developer crafting intelligent solutions that bridge the gap between human creativity and machine intelligence.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="10">0</span>
-                        <span class="stat-label">Projects</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="5">0</span>
-                        <span class="stat-label">Technologies</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="3">0</span>
-                        <span class="stat-label">Years Exp</span>
-                    </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="5">0</span>
+                    <span class="stat-label">Technologies</span>
                 </div>
-                <div class="hero-cta">
-                    <a href="#projects" class="btn btn-primary">
-                        <span>View Projects</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                    <a href="#contact" class="btn btn-secondary">
-                        <span>Get In Touch</span>
-                    </a>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="3">0</span>
+                    <span class="stat-label">Years Exp</span>
                 </div>
             </div>
-            <div class="hero-visual" id="heroSphereContainer" style="width: 100%; height: 500px; position: relative;">
-                <!-- 3D Particle Sphere injected via hero-sphere.js -->
+            <div class="hero-cta reveal reveal-delay-3" style="justify-content: center;">
+                <a href="#projects" class="btn btn-primary">
+                    <span>View Projects</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#contact" class="btn btn-secondary">
+                    <span>Get In Touch</span>
+                </a>
             </div>
         </div>
-
     </section>
 
     <!-- About & Skills Bento Section -->
     <section class="bento" id="about">
         <div class="section-container">
-            <div class="section-header reveal">
+            <div class="section-header reveal" data-parallax="0.1">
                 <span class="section-tag">About & Skills</span>
                 <h2 class="section-title">Technical <span class="gradient-text">Expertise</span> & Journey</h2>
             </div>
@@ -213,7 +212,7 @@
     <!-- Projects Section -->
     <section class="projects" id="projects">
         <div class="section-container">
-            <div class="section-header reveal">
+            <div class="section-header reveal" data-parallax="0.15">
                 <span class="section-tag">Projects</span>
                 <h2 class="section-title">Featured <span class="gradient-text">GitHub Projects</span></h2>
                 <p class="section-description">Explore my open-source contributions and personal projects</p>
@@ -332,12 +331,10 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/lenis@1.1.5/dist/lenis.min.js"></script>
     <script src="index.js"></script>
     <script type="module" src="dotted-background.js"></script>
     <script type="module" src="ascii-fire.js"></script>
-    <script type="module">
-        import { initHeroSphere } from './hero-sphere.js';
-        initHeroSphere('heroSphereContainer');
-    </script>
+    <script type="module" src="hero-text-particles.js"></script>
 </body>
 </html>
