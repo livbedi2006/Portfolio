@@ -9,7 +9,20 @@
 (function () {
     var screen  = document.getElementById('loadingScreen');
     var label   = document.getElementById('loaderPercent');
+    var bar     = document.getElementById('loaderProgress');
+    var term    = document.getElementById('terminalOutput');
     var done    = false;
+
+    var messages = [
+        "INITIALIZING KERNEL...",
+        "MOUNTING FILE SYSTEMS...",
+        "LOADING NEURAL NETWORKS...",
+        "ESTABLISHING WEBGL CONTEXT...",
+        "COMPILING SHADERS...",
+        "RENDERING PARTICLES...",
+        "SYSTEM READY."
+    ];
+    var msgIdx = 0;
 
     function hideNow() {
         if (done) return;
@@ -17,23 +30,44 @@
         if (screen) screen.classList.add('hidden');
         setTimeout(function () {
             if (screen) screen.style.display = 'none';
-        }, 800);
+        }, 800); // Wait for curtains to slide apart
     }
 
-    // Animate 0 -> 100 counter using setInterval (16ms = ~60fps)
     var pct = 0;
     var timer = setInterval(function () {
-        pct++;
-        if (label) label.textContent = pct + '%';
+        pct += Math.random() * 4; // Random leaps for hacker feel
+        if (pct > 100) pct = 100;
+        
+        if (label) label.textContent = Math.floor(pct) + '%';
+        if (bar) bar.style.width = pct + '%';
+        
+        // Add terminal messages based on percentage
+        if (pct > (msgIdx * (100 / messages.length)) && msgIdx < messages.length) {
+            if (term) {
+                var div = document.createElement('div');
+                div.className = 'terminal-line';
+                div.textContent = "> " + messages[msgIdx];
+                term.appendChild(div);
+                // Keep only last 4 lines
+                if (term.children.length > 4) {
+                    term.removeChild(term.firstChild);
+                }
+            }
+            msgIdx++;
+        }
+
         if (pct >= 100) {
             clearInterval(timer);
-            setTimeout(hideNow, 150);
+            setTimeout(hideNow, 300);
         }
-    }, 16);   // 100 steps x 16ms = ~1600ms total
+    }, 45);
 
-    // Failsafe: force-hide after 4 seconds no matter what
-    setTimeout(hideNow, 4000);
-    window.addEventListener('load', hideNow);
+    setTimeout(hideNow, 5000);
+    window.addEventListener('load', function() {
+        if (!done && pct > 80) {
+            pct = 100;
+        }
+    });
 }());
 
 
@@ -56,69 +90,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ── Trailing Cursor ───────────────────────────────────────────
-    const cursorDot   = document.getElementById('cursorDot');
-    const trailColors = ['#8b5cf6','#a78bfa','#6366f1','#3b82f6','#60a5fa','#c084fc'];
-    let lastTrailX = 0, lastTrailY = 0;
-    const MIN_DIST = 12;
+    // ── Kinetic Cursor ───────────────────────────────────────────
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorFollower = document.createElement('div');
+    cursorFollower.className = 'cursor-follower';
+    document.body.appendChild(cursorFollower);
+    
     let cursorReady = false;
-
-    document.addEventListener('mousemove', function(e) {
-        var x = e.clientX;
-        var y = e.clientY;
-
-        if (cursorDot) {
-            cursorDot.style.left = x + 'px';
-            cursorDot.style.top  = y + 'px';
-
-            // On very first move: reveal dot + hide native cursor
-            if (!cursorReady) {
-                cursorReady = true;
-                document.body.classList.add('custom-cursor');
-                cursorDot.style.opacity = '1';
-                cursorDot.style.transition =
-                    'left 0.06s ease, top 0.06s ease, ' +
-                    'width 0.2s ease, height 0.2s ease, ' +
-                    'background 0.25s ease, opacity 0.3s ease';
-            }
-        }
-
-        // Trail particles
-        var dx = x - lastTrailX;
-        var dy = y - lastTrailY;
-        if (Math.sqrt(dx*dx + dy*dy) > MIN_DIST) {
-            spawnTrail(x, y);
-            lastTrailX = x;
-            lastTrailY = y;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let cursorX = mouseX;
+    let cursorY = mouseY;
+    let followerX = mouseX;
+    let followerY = mouseY;
+    
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        if (!cursorReady) {
+            cursorReady = true;
+            document.body.classList.add('custom-cursor');
+            if (cursorDot) cursorDot.style.opacity = '1';
+            cursorFollower.style.opacity = '1';
         }
     });
-
-    function spawnTrail(x, y) {
-        var p = document.createElement('div');
-        p.className = 'trail-particle';
-        var color = trailColors[Math.floor(Math.random() * trailColors.length)];
-        var size = (4 + Math.random() * 4).toFixed(1);
-        p.style.cssText =
-            'left:' + x + 'px;' +
-            'top:' + y + 'px;' +
-            'background:' + color + ';' +
-            'box-shadow:0 0 6px ' + color + ';' +
-            'width:' + size + 'px;' +
-            'height:' + size + 'px;';
-        document.body.appendChild(p);
-        p.addEventListener('animationend', function() { p.remove(); });
+    
+    function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.6;
+        cursorY += (mouseY - cursorY) * 0.6;
+        followerX += (mouseX - followerX) * 0.15;
+        followerY += (mouseY - followerY) * 0.15;
+        
+        if (cursorDot) {
+            cursorDot.style.left = cursorX + 'px';
+            cursorDot.style.top = cursorY + 'px';
+        }
+        if (cursorFollower) {
+            cursorFollower.style.left = followerX + 'px';
+            cursorFollower.style.top = followerY + 'px';
+        }
+        
+        requestAnimationFrame(animateCursor);
     }
+    animateCursor();
 
     // Cursor grows on hover over interactive elements
     var interactives = document.querySelectorAll(
-        'a, button, .filter-btn, .skill-card, .project-card, .social-link, .contact-card, .tag'
+        'a, button, .filter-btn, .skill-card, .project-card, .social-link, .contact-card, .tag, .bento-card'
     );
     interactives.forEach(function(el) {
         el.addEventListener('mouseenter', function() {
             if (cursorDot) cursorDot.classList.add('hovering');
+            if (cursorFollower) cursorFollower.classList.add('hovering');
         });
         el.addEventListener('mouseleave', function() {
             if (cursorDot) cursorDot.classList.remove('hovering');
+            if (cursorFollower) cursorFollower.classList.remove('hovering');
         });
     });
 
@@ -433,41 +461,80 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Projects
     fetchGitHubProjects();
     
-    // Project Filter Functionality
+    // Project Filter & Coverflow Functionality
     const filterBtns = document.querySelectorAll('.filter-btn');
+    let currentGalleryIndex = 0;
+    let visibleCards = [];
+    
+    function updateGallery() {
+        if (visibleCards.length === 0) return;
+        
+        visibleCards.forEach((card, index) => {
+            card.className = 'project-card'; // Reset classes
+            card.style.display = 'flex';
+            card.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease';
+            
+            if (index === currentGalleryIndex) {
+                card.classList.add('active');
+            } else if (index === currentGalleryIndex - 1) {
+                card.classList.add('prev');
+            } else if (index === currentGalleryIndex + 1) {
+                card.classList.add('next');
+            } else if (index < currentGalleryIndex - 1) {
+                card.classList.add('prev-hidden');
+            } else {
+                card.classList.add('next-hidden');
+            }
+        });
+    }
+
+    const prevBtn = document.getElementById('prevProject');
+    const nextBtn = document.getElementById('nextProject');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentGalleryIndex > 0) {
+                currentGalleryIndex--;
+                updateGallery();
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentGalleryIndex < visibleCards.length - 1) {
+                currentGalleryIndex++;
+                updateGallery();
+            }
+        });
+    }
     
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Update active state
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
             const filter = btn.getAttribute('data-filter');
-            const cards = projectsGrid.querySelectorAll('.project-card');
+            const allCards = projectsGrid.querySelectorAll('.project-card');
             
-            let visibleIndex = 0;
-            cards.forEach(card => {
+            visibleCards = Array.from(allCards).filter(card => {
                 const category = card.getAttribute('data-category');
-                
                 if (filter === 'all' || category === filter) {
-                    card.style.display = 'flex';
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        card.style.transition = 'all 0.5s ease-out';
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50 + (visibleIndex * 100));
-                    visibleIndex++;
+                    return true;
                 } else {
                     card.style.display = 'none';
+                    card.className = 'project-card';
+                    return false;
                 }
             });
+            
+            currentGalleryIndex = 0;
+            updateGallery();
         });
     });
     
     // Skill Bar Animation on Scroll
-    const skillBars = document.querySelectorAll('.skill-bar');
+    const skillBars = document.querySelectorAll('.skill-bar-fill');
     
     const skillsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -483,6 +550,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.5 });
     
     skillBars.forEach(bar => skillsObserver.observe(bar));
+
+    // Bento Card Glow Effect
+    document.querySelectorAll('.bento-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
     
     // Scroll Reveal Animation
     const revealElements = document.querySelectorAll('.about-content, .about-visual, .skill-card, .contact-card');
