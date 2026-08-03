@@ -1485,25 +1485,25 @@ footer {
 }
 
 .project-card.prev {
-    transform: translateX(-40%) translateZ(-200px) rotateY(15deg) scale(0.8);
+    transform: translateX(-25%) translateZ(-200px) rotateY(15deg) scale(0.8);
     opacity: 0.6;
     z-index: 4;
 }
 
 .project-card.next {
-    transform: translateX(40%) translateZ(-200px) rotateY(-15deg) scale(0.8);
+    transform: translateX(25%) translateZ(-200px) rotateY(-15deg) scale(0.8);
     opacity: 0.6;
     z-index: 4;
 }
 
 .project-card.prev-hidden {
-    transform: translateX(-80%) translateZ(-400px) rotateY(30deg) scale(0.6);
+    transform: translateX(-50%) translateZ(-400px) rotateY(30deg) scale(0.6);
     opacity: 0;
     z-index: 3;
 }
 
 .project-card.next-hidden {
-    transform: translateX(80%) translateZ(-400px) rotateY(-30deg) scale(0.6);
+    transform: translateX(50%) translateZ(-400px) rotateY(-30deg) scale(0.6);
     opacity: 0;
     z-index: 3;
 }
