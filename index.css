@@ -11,12 +11,12 @@
 
     --dark-bg:        #0f0b1a;
     --dark-bg-alt:    #16102b;
-    --card-bg:        rgba(29, 21, 56, 0.45);
-    --card-bg-hover:  rgba(38, 28, 74, 0.65);
-    --text-primary:   #f5f3ff;
-    --text-secondary: #c4b5fd;
-    --text-muted:     #8b5cf6;
-    --border-color:   rgba(255, 255, 255, 0.08);
+    --card-bg:        rgba(20, 20, 25, 0.4);
+    --card-bg-hover:  rgba(30, 30, 35, 0.5);
+    --text-primary:   #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted:     #71717a;
+    --border-color:   rgba(255, 255, 255, 0.05);
     --border-light:   rgba(255, 255, 255, 0.15);
 
     --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
@@ -183,8 +183,8 @@ body.custom-cursor .filter-btn {
 .reveal {
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94),
-                transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    transition: opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .reveal.reveal-left  { transform: translateX(-50px); }
@@ -1148,10 +1148,11 @@ section {
 
 .bento-card {
     background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     border: 1px solid var(--border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
     padding: 2rem;
     position: relative;
@@ -1596,9 +1597,10 @@ footer {
     height: 100%;
     max-height: 320px;
     background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     padding: 1.5rem;
     display: flex;
