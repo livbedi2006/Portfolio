@@ -55,7 +55,7 @@ class ParticleEngine {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
         
-        this.ctx = this.canvas.getContext('2d', { alpha: false }); // Optimize for no alpha background
+        this.ctx = this.canvas.getContext('2d'); // Removed alpha: false to allow transparent background
         this.particles = [];
         this.mouse = { x: -1000, y: -1000, radius: 120 };
         
@@ -151,9 +151,8 @@ class ParticleEngine {
     }
 
     animate() {
-        // Clear with dark background
-        this.ctx.fillStyle = "#0f0b1a";
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        // Clear canvas for transparent background
+        this.ctx.clearRect(0, 0, this.width, this.height);
         
         this.particles.forEach(p => {
             p.update(this.mouse);

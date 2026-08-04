@@ -78,8 +78,28 @@
     </nav>
 
     <!-- Particle Text Hero Section -->
-    <section class="hero-particle" id="home" style="position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1;">
-        <canvas id="textParticleCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: auto; cursor: crosshair;"></canvas>
+    <section class="hero-particle" id="home">
+        <!-- Glowing Wave Background -->
+        <div class="hero-wave-bg">
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <div class="glow-orb orb-3"></div>
+            <div class="wave-line"></div>
+        </div>
+        
+        <!-- Glass Mosaic Grid -->
+        <div class="hero-glass-grid">
+            <div class="glass-panel empty"></div>
+            <div class="glass-panel span-row"></div>
+            <div class="glass-panel empty"></div>
+            <div class="glass-panel span-col"></div>
+            <div class="glass-panel center-panel"></div>
+            <div class="glass-panel empty"></div>
+            <div class="glass-panel span-col"></div>
+            <div class="glass-panel empty"></div>
+        </div>
+        
+        <canvas id="textParticleCanvas"></canvas>
     </section>
 
     <!-- Intro Section (Moved from old hero) -->
