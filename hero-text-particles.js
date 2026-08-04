@@ -66,17 +66,17 @@ class ParticleEngine {
         window.addEventListener('resize', () => this.resize());
         
         // Mouse events
-        window.addEventListener('mousemove', (e) => {
+        this.canvas.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouse.x = e.clientX - rect.left;
             this.mouse.y = e.clientY - rect.top;
         });
-        window.addEventListener('touchmove', (e) => {
+        this.canvas.addEventListener('touchmove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouse.x = e.touches[0].clientX - rect.left;
             this.mouse.y = e.touches[0].clientY - rect.top;
         }, { passive: true });
-        window.addEventListener('mouseleave', () => {
+        this.canvas.addEventListener('mouseleave', () => {
             this.mouse.x = -1000;
             this.mouse.y = -1000;
         });
