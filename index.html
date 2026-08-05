@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Livjot Singh | AI/ML Engineer & Software Developer</title>
-    <meta name="description" content="Livjot Singh - AI/ML Engineer and Software Developer specializing in machine learning, full-stack development, and innovative tech solutions.">
+    <title>Livjot Singh | AI/ML Engineer & Full-Stack Developer</title>
+    <meta name="description" content="Livjot Singh - AI/ML Engineer & Software Developer building intelligent models, NLP platforms, and high-performance web applications. Inspired by high-trust fintech design.">
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Custom Cursor -->
     <div class="cursor-dot" id="cursorDot"></div>
-    <div class="cursor-trail-container" id="cursorTrail"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+    <!-- Fine Noise / Grain Overlay -->
+    <div class="grain-overlay" aria-hidden="true"></div>
 
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
@@ -24,344 +27,589 @@
                 <span class="loader-logo-text">LS</span>
                 <div class="loader-logo-glow"></div>
             </div>
-            <div class="terminal-output" id="terminalOutput">
-                <!-- Lines added via JS -->
-            </div>
+            <div class="terminal-output" id="terminalOutput"></div>
             <div class="loader-progress-wrap">
                 <div class="loader-progress-bar" id="loaderProgress"></div>
             </div>
             <div class="loader-percent-wrap">
-                <span class="loader-status">BOOTING SYSTEM...</span>
+                <span class="loader-status">INITIALIZING FINTECH CORE...</span>
                 <span class="loader-percent" id="loaderPercent">0%</span>
             </div>
         </div>
     </div>
 
-    <!-- Animated Background -->
-    <div class="animated-background" id="animated-background">
-        <div class="global-glow orb-purple"></div>
-        <div class="global-glow orb-blue"></div>
-        <div class="global-glow orb-cyan"></div>
-    </div>
-    <!-- Grain Texture Overlay -->
-    <div class="grain-overlay"></div>
-
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo">
-                <span class="logo-text">LS</span>
-                <span class="logo-dot"></span>
-            </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home" class="nav-link" data-section="home">Home</a></li>
-                <li><a href="#about" class="nav-link" data-section="about">About & Skills</a></li>
-                <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
-                <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="5"/>
-                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                    </svg>
-                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                </button>
-                <a href="https://github.com/livbedi2006" target="_blank" class="github-btn" aria-label="GitHub">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
+    <!-- Top Navigation Bar -->
+    <header class="navbar-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <a href="#home" class="logo">
+                    <span class="logo-badge">LS</span>
+                    <div class="logo-status">
+                        <span class="status-pulse"></span>
+                        <span class="status-text">SYSTEM OPERATIONAL</span>
+                    </div>
                 </a>
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Particle Text Hero Section -->
-    <section class="hero-particle" id="home">
-        <!-- Glowing Wave Background -->
-        <div class="hero-wave-bg">
-            <div class="glow-orb orb-1"></div>
-            <div class="glow-orb orb-2"></div>
-            <div class="glow-orb orb-3"></div>
-            <div class="wave-line"></div>
-        </div>
-        
-        <!-- Glass Mosaic Grid -->
-        <div class="hero-glass-grid">
-            <div class="glass-panel empty"></div>
-            <div class="glass-panel span-row"></div>
-            <div class="glass-panel empty"></div>
-            <div class="glass-panel span-col"></div>
-            <div class="glass-panel center-panel"></div>
-            <div class="glass-panel empty"></div>
-            <div class="glass-panel span-col"></div>
-            <div class="glass-panel empty"></div>
-        </div>
-        
-        <canvas id="textParticleCanvas"></canvas>
-    </section>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home" class="nav-link active" data-section="home">Platform</a></li>
+                    <li><a href="#about" class="nav-link" data-section="about">Architecture</a></li>
+                    <li><a href="#projects" class="nav-link" data-section="projects">Case Studies</a></li>
+                    <li><a href="#services" class="nav-link" data-section="services">Services</a></li>
+                    <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+                </ul>
 
-    <!-- Intro Section (Moved from old hero) -->
-    <section class="intro" id="intro" style="padding: 6rem 0;">
-        <div class="section-container" style="max-width: 800px; margin: 0 auto; text-align: center;">
-            <div class="hero-badge" style="justify-content: center; margin-bottom: 2rem;">
-                <span class="badge-dot"></span>
-                <span>Available for opportunities</span>
-            </div>
-            <h1 class="hero-title reveal" style="min-height: 1.5em; font-size: 3rem; margin-bottom: 1.5rem;">
-                <span class="title-line"><span class="typed-text title-gradient"></span><span class="typing-cursor">|</span></span>
-            </h1>
-            <p class="hero-subtitle reveal reveal-delay-1" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem auto;">
-                I'm Livjot Singh, an AI/ML Engineer & Full-Stack Developer crafting intelligent solutions that bridge the gap between human creativity and machine intelligence.
-            </p>
-            <div class="hero-stats reveal reveal-delay-2" style="justify-content: center; margin-bottom: 3rem;">
-                <div class="stat-item">
-                    <span class="stat-number" data-target="10">0</span>
-                    <span class="stat-label">Projects</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="5">0</span>
-                    <span class="stat-label">Technologies</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="3">0</span>
-                    <span class="stat-label">Years Exp</span>
-                </div>
-            </div>
-            <div class="hero-cta reveal reveal-delay-3" style="justify-content: center;">
-                <a href="#projects" class="btn btn-primary">
-                    <span>View Projects</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </a>
-                <a href="#contact" class="btn btn-secondary">
-                    <span>Get In Touch</span>
-                </a>
-            </div>
-        </div>
-    </section>
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                        </svg>
+                        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </button>
+                    
+                    <a href="#contact" class="btn-demo open-modal-btn">
+                        <span>Book a demo</span>
+                    </a>
 
-    <!-- About & Skills Bento Section -->
-    <section class="bento" id="about">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <span class="section-tag">About & Skills</span>
-                <h2 class="section-title">Technical <span class="gradient-text">Expertise</span> & Journey</h2>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
-            
-            <div class="bento-grid" id="bentoGrid">
-                <!-- Card 1: Bio (2x2) -->
-                <div class="bento-card bento-span-2x2 reveal reveal-left">
-                    <h3 class="bento-header">About Me</h3>
-                    <p class="bento-text" style="margin-bottom: 1rem;">
-                        I'm a Computer Science Engineering undergraduate at Chandigarh University with a deep passion for artificial intelligence, machine learning, and full-stack development. My journey in technology is driven by curiosity and the desire to solve real-world problems through innovative code.
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main>
+        <!-- HERO SECTION (Inspired by Meridial design in impli.mp4) -->
+        <section class="hero-section" id="home">
+            <div class="hero-container">
+                <!-- Left Hero Copy -->
+                <div class="hero-left reveal">
+                    <div class="ticker-badge">
+                        <span class="badge-dot pulse-emerald"></span>
+                        <span class="badge-text">MANAGING 10+ AI & FULL-STACK PROJECTS</span>
+                    </div>
+
+                    <h1 class="hero-title">
+                        Clarity, across every <span class="text-highlight">system</span> you build.
+                    </h1>
+
+                    <p class="hero-description">
+                        Livjot Singh delivers real-time AI/ML models, NLP pipelines, and high-performance web products — combining private-banking precision with high-trust engineering.
                     </p>
-                    <p class="bento-text">
-                        From building AI-powered exam invigilation systems to creating plagiarism detectors using NLP, I specialize in developing solutions that combine cutting-edge technology with practical applications.
+
+                    <div class="hero-cta-group">
+                        <a href="#projects" class="btn-primary-hero">
+                            <span>Request access</span>
+                        </a>
+                        <a href="#contact" class="btn-secondary-hero open-modal-btn">
+                            <span>Book a demo</span>
+                        </a>
+                    </div>
+
+                    <div class="hero-trust-bar">
+                        <span class="trust-title">TRUSTED & POWERED BY TECH STACK AT</span>
+                        <div class="trust-logos">
+                            <span class="trust-logo">TensorFlow</span>
+                            <span class="trust-logo">PyTorch</span>
+                            <span class="trust-logo">Python</span>
+                            <span class="trust-logo">React</span>
+                            <span class="trust-logo">TypeScript</span>
+                            <span class="trust-logo">GCP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Interactive Product Preview (Directly matching impli.mp4) -->
+                <div class="hero-right reveal reveal-delay-1">
+                    <div class="product-preview-frame">
+                        <!-- Top Bar of Glass Frame -->
+                        <div class="preview-header-bar">
+                            <div class="window-controls">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="preview-address">livjotsingh.dev / platform-preview</span>
+                            <span class="preview-status-pill">LIVE SYNC</span>
+                        </div>
+
+                        <!-- Dashboard Grid Container -->
+                        <div class="preview-dashboard-grid">
+                            
+                            <!-- Card 1: Target Allocation / Skill Matrix -->
+                            <div class="dashboard-card target-card">
+                                <div class="card-top-bar">
+                                    <span class="card-badge">TARGET ALLOCATION</span>
+                                    <span class="card-icon">⚡</span>
+                                </div>
+
+                                <div class="allocation-ratio">
+                                    <div class="ratio-item">
+                                        <span class="ratio-val">60%</span>
+                                        <span class="ratio-label">equity / ml</span>
+                                    </div>
+                                    <div class="ratio-divider">/</div>
+                                    <div class="ratio-item">
+                                        <span class="ratio-val">40%</span>
+                                        <span class="ratio-label">bonds / web</span>
+                                    </div>
+                                </div>
+
+                                <div class="rebalance-alert">
+                                    <div class="alert-icon">!</div>
+                                    <div class="alert-text">
+                                        <strong>REBALANCE NEEDED</strong>
+                                        <span>Skill shift allocation drifted 4.2%</span>
+                                    </div>
+                                </div>
+
+                                <div class="mini-metrics-list">
+                                    <div class="metric-row active">
+                                        <span>+7.2% YTD</span>
+                                        <span class="arrow">›</span>
+                                    </div>
+                                    <div class="metric-row">
+                                        <span>BEST REVIEW Q3</span>
+                                        <span class="arrow">›</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: System Metrics / Trust Card -->
+                            <div class="dashboard-card metric-card">
+                                <span class="card-badge">LIVJOT SYSTEM CLUSTER</span>
+                                <div class="metric-large-wrap">
+                                    <span class="metric-currency">$18,420,500</span>
+                                    <span class="metric-badge green">+2.4%</span>
+                                </div>
+                                <div class="sparkline-wrap">
+                                    <svg viewBox="0 0 200 40" class="sparkline-svg">
+                                        <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5" fill="none" stroke="#10b981" stroke-width="2.5"/>
+                                        <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5 L200,40 L0,40 Z" fill="url(#sparkline-grad)" opacity="0.2"/>
+                                        <defs>
+                                            <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stop-color="#10b981"/>
+                                                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Real-Time Drift Detection Alert Pill -->
+                            <div class="dashboard-card drift-alert-card" id="driftAlertCard">
+                                <div class="alert-pulse-wrap">
+                                    <span class="pulse-ring"></span>
+                                    <span class="pulse-dot"></span>
+                                </div>
+                                <div class="drift-content">
+                                    <h3>Real-time drift detection</h3>
+                                    <p>From target to rebalance — tracked automatically in real time.</p>
+                                </div>
+                                <button class="btn-drift-toggle" id="driftToggleBtn">Active</button>
+                            </div>
+
+                            <!-- Card 4: Interactive Skill Radar Chart Card -->
+                            <div class="dashboard-card radar-card">
+                                <div class="card-top-bar">
+                                    <div>
+                                        <span class="card-badge">DEVELOPER ACTIVITY</span>
+                                        <h4 class="card-title-sm">Technical Profile</h4>
+                                    </div>
+                                    <span class="pill-history">FULL HISTORY</span>
+                                </div>
+
+                                <div class="radar-chart-container">
+                                    <canvas id="skillRadarCanvas" width="220" height="220"></canvas>
+                                </div>
+
+                                <div class="radar-stats-grid">
+                                    <div class="stat-pill">
+                                        <span class="num">218</span>
+                                        <span class="lbl">Commits</span>
+                                    </div>
+                                    <div class="stat-pill">
+                                        <span class="num">35</span>
+                                        <span class="lbl">Models</span>
+                                    </div>
+                                    <div class="stat-pill">
+                                        <span class="num">74</span>
+                                        <span class="lbl">Risk profile</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 5: Portfolio Composition & Asset Breakdown -->
+                            <div class="dashboard-card composition-card">
+                                <div class="card-top-bar">
+                                    <span class="card-badge">PORTFOLIO COMPOSITION</span>
+                                    <span class="pill-history">ASSET CLASS</span>
+                                </div>
+
+                                <div class="donut-chart-row">
+                                    <div class="donut-wrap">
+                                        <svg viewBox="0 0 100 100" class="donut-svg">
+                                            <circle cx="50" cy="50" r="38" stroke="rgba(255,255,255,0.08)" stroke-width="12" fill="none"/>
+                                            <circle cx="50" cy="50" r="38" stroke="#ffffff" stroke-width="12" fill="none" stroke-dasharray="80 240" stroke-dashoffset="0"/>
+                                            <circle cx="50" cy="50" r="38" stroke="#10b981" stroke-width="12" fill="none" stroke-dasharray="55 240" stroke-dashoffset="-80"/>
+                                            <circle cx="50" cy="50" r="38" stroke="#6366f1" stroke-width="12" fill="none" stroke-dasharray="35 240" stroke-dashoffset="-135"/>
+                                        </svg>
+                                        <div class="donut-center-text">
+                                            <span>100%</span>
+                                            <span class="sub">Active</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="composition-legend">
+                                        <div class="legend-item">
+                                            <span class="dot white"></span>
+                                            <span class="name">Machine Learning</span>
+                                            <span class="pct">34%</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="dot emerald"></span>
+                                            <span class="name">Web Systems</span>
+                                            <span class="pct">34%</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="dot indigo"></span>
+                                            <span class="name">APIs & Backend</span>
+                                            <span class="pct">23%</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <span class="dot gray"></span>
+                                            <span class="name">Tools & Automation</span>
+                                            <span class="pct">9%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div> <!-- /preview-dashboard-grid -->
+                        
+                        <div class="preview-footer-banner">
+                            <span>Every model, every application, one clear signal</span>
+                        </div>
+                    </div> <!-- /product-preview-frame -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT & TECHNICAL ARCHITECTURE SECTION (BENTO GRID) -->
+        <section class="bento-section" id="about">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <span class="section-tag">Technical Architecture</span>
+                    <h2 class="section-title">Built for high-trust <span class="text-highlight">performance</span></h2>
+                    <p class="section-subtitle">
+                        Computer Science Engineering undergraduate at Chandigarh University with specialized focus on ML algorithms, full-stack engineering, and AI automation.
                     </p>
-                    <div class="bento-tags" style="margin-top: auto;">
-                        <span class="bento-tag">Problem Solver</span>
-                        <span class="bento-tag">Innovation Driven</span>
-                        <span class="bento-tag">Team Player</span>
-                    </div>
                 </div>
 
-                <!-- Card 2: Tech Stack visual (2x1) -->
-                <div class="bento-card bento-span-2x1 reveal reveal-right reveal-delay-1">
-                    <h3 class="bento-header" style="margin-bottom: 0.5rem;">Core Stack</h3>
-                    <p class="bento-text">The main technologies I use every day.</p>
-                    <div class="bento-tags">
-                        <span class="bento-tag" style="background: rgba(227, 79, 38, 0.1); border-color: rgba(227, 79, 38, 0.3); color: #e34f26;">HTML/CSS</span>
-                        <span class="bento-tag" style="background: rgba(247, 223, 30, 0.1); border-color: rgba(247, 223, 30, 0.3); color: #f7df1e;">JavaScript</span>
-                        <span class="bento-tag" style="background: rgba(49, 120, 198, 0.1); border-color: rgba(49, 120, 198, 0.3); color: #3178c6;">TypeScript</span>
-                        <span class="bento-tag" style="background: rgba(53, 114, 165, 0.1); border-color: rgba(53, 114, 165, 0.3); color: #3572A5;">Python</span>
-                        <span class="bento-tag" style="background: rgba(176, 114, 25, 0.1); border-color: rgba(176, 114, 25, 0.3); color: #b07219;">Java</span>
-                        <span class="bento-tag" style="background: rgba(227, 76, 38, 0.1); border-color: rgba(227, 76, 38, 0.3); color: #e34c26;">Git</span>
+                <div class="bento-grid">
+                    <!-- Bio Card (2x2) -->
+                    <div class="bento-card bento-2x2 reveal">
+                        <div class="bento-card-header">
+                            <span class="card-tag">DEVELOPER PROFILE</span>
+                            <h3>Engineering Mindset & AI Focus</h3>
+                        </div>
+                        <p class="bento-body">
+                            I specialize in engineering solutions that bridge the gap between artificial intelligence and seamless user experiences. From building automated exam invigilation systems to NLP plagiarism detectors, my work centers on accuracy, security, and scalable architecture.
+                        </p>
+                        <div class="bento-badge-group">
+                            <span class="bento-pill">Chandigarh University</span>
+                            <span class="bento-pill">Computer Science Eng</span>
+                            <span class="bento-pill">AI/ML Specialist</span>
+                        </div>
+                        <div class="bento-stat-footer">
+                            <div class="stat-box">
+                                <span class="stat-num" data-target="10">10+</span>
+                                <span class="stat-lbl">Projects Built</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" data-target="99">99.4%</span>
+                                <span class="stat-lbl">Model Precision</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" data-target="3">3+ Yrs</span>
+                                <span class="stat-lbl">Coding Experience</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Card 3: Machine Learning (1x1) -->
-                <div class="bento-card bento-span-1x1 reveal reveal-scale reveal-delay-2" data-skill="ml">
-                    <div class="bento-icon-wrap">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <!-- Core Stack Card -->
+                    <div class="bento-card bento-2x1 reveal reveal-delay-1">
+                        <div class="bento-card-header">
+                            <span class="card-tag">STACK MATRIX</span>
+                            <h3>Core Engineering Stack</h3>
+                        </div>
+                        <div class="bento-tags-grid">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">TensorFlow</span>
+                            <span class="tech-tag">PyTorch</span>
+                            <span class="tech-tag">OpenCV</span>
+                            <span class="tech-tag">JavaScript (ES6+)</span>
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Git & GCP</span>
+                        </div>
                     </div>
-                    <h3 class="bento-header" style="font-size: 1.1rem; margin-bottom: 0.25rem;">Machine Learning</h3>
-                    <p class="bento-text" style="font-size: 0.8rem; margin-bottom: 1rem;">TensorFlow, NLP, Model Training</p>
-                    <div class="skill-bar-container"><div class="skill-bar-fill" style="width: 85%;"></div></div>
-                </div>
 
-                <!-- Card 4: Python (1x1) -->
-                <div class="bento-card bento-span-1x1 reveal reveal-scale reveal-delay-3" data-skill="python">
-                    <div class="bento-icon-wrap">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V3.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"/></svg>
+                    <!-- ML & AI Deep Dive -->
+                    <div class="bento-card bento-1x1 reveal reveal-delay-2">
+                        <div class="bento-card-header">
+                            <span class="card-tag">SPECIALIZATION</span>
+                            <h3>Machine Learning</h3>
+                        </div>
+                        <p class="bento-subtext">NLP, Neural Networks, Model Training & Computer Vision</p>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-label">
+                                <span>Accuracy & Tuning</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 92%;"></div></div>
+                        </div>
                     </div>
-                    <h3 class="bento-header" style="font-size: 1.1rem; margin-bottom: 0.25rem;">Python</h3>
-                    <p class="bento-text" style="font-size: 0.8rem; margin-bottom: 1rem;">Data Science & Backend</p>
-                    <div class="skill-bar-container"><div class="skill-bar-fill" style="width: 90%;"></div></div>
-                </div>
 
-                <!-- Card 5: Full Stack (1x2) -->
-                <div class="bento-card bento-span-2x1 reveal reveal-scale reveal-delay-2" style="background: var(--gradient-1);">
-                    <div class="bento-icon-wrap" style="background: rgba(255,255,255,0.2); border: none; color: white;">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 3h18v18H3V3zm16.525 13.707c-.131-.821-.666-1.511-2.252-2.155-.552-.259-1.165-.438-1.349-.854-.068-.248-.078-.382-.034-.529.113-.484.687-.629 1.137-.495.293.09.563.315.732.676.775-.507.775-.507 1.316-.844-.203-.314-.304-.451-.439-.586-.473-.528-1.103-.798-2.126-.775l-.528.067c-.507.124-.991.395-1.283.754-.855.968-.608 2.655.427 3.354 1.023.765 2.521.933 2.712 1.653.18.878-.652 1.159-1.475 1.058-.607-.136-.945-.439-1.316-1.002l-1.372.788c.157.359.337.517.607.832 1.305 1.316 4.568 1.249 5.153-.754.021-.067.18-.528.056-1.237l.034.049zm-6.737-5.434h-1.686c0 1.453-.007 2.898-.007 4.354 0 .924.047 1.772-.104 2.033-.247.517-.886.451-1.175.359-.297-.146-.448-.349-.623-.641-.047-.078-.082-.146-.095-.146l-1.368.844c.229.473.563.879.994 1.137.641.383 1.502.507 2.404.305.588-.17 1.095-.519 1.358-1.059.384-.697.302-1.553.299-2.509.008-1.541 0-3.083 0-4.635l.003-.042z"/></svg>
+                    <!-- Full-Stack Web Dev -->
+                    <div class="bento-card bento-1x1 reveal reveal-delay-3">
+                        <div class="bento-card-header">
+                            <span class="card-tag">FULL-STACK</span>
+                            <h3>Web Systems</h3>
+                        </div>
+                        <p class="bento-subtext">React, Node.js, Modern CSS, REST APIs & Responsive UIs</p>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-label">
+                                <span>Architecture & Performance</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 90%;"></div></div>
+                        </div>
                     </div>
-                    <h3 class="bento-header" style="color: white; margin-bottom: 0.5rem;">Web Dev</h3>
-                    <p class="bento-text" style="color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Building robust and scalable web applications from front to back.</p>
-                    <div class="bento-tags">
-                        <span class="bento-tag" style="background: rgba(255,255,255,0.2); border: none; color: white;">React</span>
-                        <span class="bento-tag" style="background: rgba(255,255,255,0.2); border: none; color: white;">Node.js</span>
-                        <span class="bento-tag" style="background: rgba(255,255,255,0.2); border: none; color: white;">REST APIs</span>
-                    </div>
-                </div>
-
-                <!-- Card 6: Cloud (1x1) -->
-                <div class="bento-card bento-span-2x1 reveal reveal-scale reveal-delay-4" data-skill="cloud">
-                    <div class="bento-icon-wrap">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
-                    </div>
-                    <h3 class="bento-header" style="font-size: 1.1rem; margin-bottom: 0.25rem;">Cloud</h3>
-                    <p class="bento-text" style="font-size: 0.8rem; margin-bottom: 1rem;">GCP, Architectures</p>
-                    <div class="skill-bar-container"><div class="skill-bar-fill" style="width: 70%;"></div></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Projects Section -->
-    <section class="projects" id="projects">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <span class="section-tag">Projects</span>
-                <h2 class="section-title">Featured <span class="gradient-text">GitHub Projects</span></h2>
-                <p class="section-description">Explore my open-source contributions and personal projects</p>
-            </div>
-            <div class="projects-filter">
-                <button class="filter-btn active" data-filter="ai">AI/ML</button>
-                <button class="filter-btn" data-filter="web">Web Dev</button>
-                <button class="filter-btn" data-filter="tools">Tools</button>
-            </div>
-            
-            <div class="projects-gallery-wrapper">
-                <button class="gallery-nav prev" id="prevProject" aria-label="Previous project">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
-                <div class="projects-grid" id="projectsGrid">
-                    <!-- Projects will be dynamically loaded from GitHub -->
+        <!-- FEATURED CASE STUDIES & PROJECTS (Inspired by 'More by Kris Anfalova' in impli.mp4) -->
+        <section class="projects-section" id="projects">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <span class="section-tag">Case Studies</span>
+                    <h2 class="section-title">Selected <span class="text-highlight">GitHub Projects</span></h2>
+                    <p class="section-subtitle">
+                        Explore open-source repositories and engineering case studies crafted with clean code and high performance.
+                    </p>
+                </div>
+
+                <div class="projects-filter-bar reveal">
+                    <button class="filter-btn active" data-filter="all">All Projects</button>
+                    <button class="filter-btn" data-filter="ai">AI & ML</button>
+                    <button class="filter-btn" data-filter="web">Web Systems</button>
+                    <button class="filter-btn" data-filter="tools">Tools</button>
+                </div>
+
+                <div class="projects-grid-container" id="projectsGrid">
+                    <!-- Project Cards (Dynamically populated by index.js and backed by fallbacks) -->
                     <div class="loading-projects">
-                        <div class="spinner"></div>
-                        <p>Loading projects from GitHub...</p>
+                        <div class="fintech-spinner"></div>
+                        <p>Syncing repositories from GitHub...</p>
                     </div>
                 </div>
-                <button class="gallery-nav next" id="nextProject" aria-label="Next project">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
-            </div>
-            
-            <div class="projects-more">
-                <a href="https://github.com/livbedi2006?tab=repositories" target="_blank" class="btn btn-outline">
-                    <span>View All on GitHub</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <span class="section-tag">Contact</span>
-                <h2 class="section-title">Let's <span class="gradient-text">work together</span></h2>
-                <p class="section-description">Have a project in mind or want to collaborate? Feel free to reach out!</p>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                <polyline points="22,6 12,13 2,6"/>
-                            </svg>
-                        </div>
-                        <h3>Email</h3>
-                        <a href="mailto:www.livjotseerat@gmail.com">www.livjotseerat@gmail.com</a>
-                    </div>
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                            </svg>
-                        </div>
-                        <h3>Phone</h3>
-                        <a href="tel:+917696760049">+91 7696760049</a>
-                    </div>
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                <circle cx="12" cy="10" r="3"/>
-                            </svg>
-                        </div>
-                        <h3>Location</h3>
-                        <p>#209 HIRA ENCLAVE, Nabha, Punjab</p>
-                    </div>
-                </div>
-                <div class="social-links">
-                    <a href="https://github.com/livbedi2006" target="_blank" class="social-link github">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                <div class="projects-more-cta reveal">
+                    <a href="https://github.com/livbedi2006?tab=repositories" target="_blank" class="btn-outline-fintech">
+                        <span>View all repositories on GitHub</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
                         </svg>
-                        <span>GitHub</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/livjot-singh-bedi-3ab997320/" target="_blank" class="social-link linkedin">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
-                        <span>LinkedIn</span>
-                    </a>
-                    <a href="https://instagram.com/liv_s.bedi" target="_blank" class="social-link instagram">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                        <span>Instagram</span>
                     </a>
                 </div>
             </div>
+        </section>
+
+        <!-- SERVICES & OFFERINGS SECTION (Directly inspired by Services in impli.mp4) -->
+        <section class="services-section" id="services">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <span class="section-tag">Services</span>
+                    <h2 class="section-title">Engineering <span class="text-highlight">Services</span> & Capabilities</h2>
+                    <p class="section-subtitle">
+                        From bespoke AI models to private-banking web UI landing pages, I build production-ready systems tailored to modern standards.
+                    </p>
+                </div>
+
+                <div class="services-grid">
+                    <!-- Service 1 -->
+                    <div class="service-card reveal">
+                        <div class="service-top">
+                            <span class="service-category">WEB DESIGN & DEV</span>
+                            <span class="service-pricing">High Impact</span>
+                        </div>
+                        <h3 class="service-title">High-End "Awwwards Style" Web Design</h3>
+                        <p class="service-desc">
+                            Grain-textured, dark-themed, ultra-smooth web applications built with vanilla CSS, modern micro-interactions, and high-trust layouts.
+                        </p>
+                        <ul class="service-list">
+                            <li>✓ Custom CSS Design Systems & Tokens</li>
+                            <li>✓ Hardware-accelerated Smooth Scrolling</li>
+                            <li>✓ Interactive Canvas & SVG Dashboards</li>
+                        </ul>
+                        <a href="#contact" class="btn-service open-modal-btn">Get in touch</a>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="service-card reveal reveal-delay-1">
+                        <div class="service-top">
+                            <span class="service-category">ARTIFICIAL INTELLIGENCE</span>
+                            <span class="service-pricing">Production Ready</span>
+                        </div>
+                        <h3 class="service-title">Custom AI/ML Model Training & NLP</h3>
+                        <p class="service-desc">
+                            End-to-end Machine Learning pipelines, NLP text analysis tools, plagiarism detection engines, and computer vision invigilation systems.
+                        </p>
+                        <ul class="service-list">
+                            <li>✓ TensorFlow & PyTorch Architectures</li>
+                            <li>✓ Computer Vision & Pose Detection</li>
+                            <li>✓ Data Preprocessing & Model Evaluation</li>
+                        </ul>
+                        <a href="#contact" class="btn-service open-modal-btn">Get in touch</a>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="service-card reveal reveal-delay-2">
+                        <div class="service-top">
+                            <span class="service-category">FULL-STACK SYSTEMS</span>
+                            <span class="service-pricing">Scalable</span>
+                        </div>
+                        <h3 class="service-title">Full-Stack Web Applications & APIs</h3>
+                        <p class="service-desc">
+                            Scalable web platforms powered by React, TypeScript, and Node.js REST APIs engineered for speed and maintainability.
+                        </p>
+                        <ul class="service-list">
+                            <li>✓ React & TypeScript Architecture</li>
+                            <li>✓ Secure RESTful API Services</li>
+                            <li>✓ Database & Cloud Infrastructure</li>
+                        </ul>
+                        <a href="#contact" class="btn-service open-modal-btn">Get in touch</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section class="contact-section" id="contact">
+            <div class="section-container">
+                <div class="contact-box reveal">
+                    <div class="contact-header">
+                        <span class="section-tag">Contact</span>
+                        <h2 class="contact-title">Let's build something <span class="text-highlight">extraordinary</span></h2>
+                        <p class="contact-subtitle">
+                            Whether you're looking for AI engineering, full-stack web development, or a high-end fintech UI, feel free to reach out directly.
+                        </p>
+                    </div>
+
+                    <div class="contact-grid">
+                        <a href="mailto:www.livjotseerat@gmail.com" class="contact-info-card">
+                            <div class="icon-wrap">📧</div>
+                            <div class="info-content">
+                                <span>Email</span>
+                                <strong>www.livjotseerat@gmail.com</strong>
+                            </div>
+                        </a>
+
+                        <a href="tel:+917696760049" class="contact-info-card">
+                            <div class="icon-wrap">📱</div>
+                            <div class="info-content">
+                                <span>Phone</span>
+                                <strong>+91 7696760049</strong>
+                            </div>
+                        </a>
+
+                        <div class="contact-info-card">
+                            <div class="icon-wrap">📍</div>
+                            <div class="info-content">
+                                <span>Location</span>
+                                <strong>Nabha, Punjab, India</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="socials-bar">
+                        <a href="https://github.com/livbedi2006" target="_blank" class="social-btn">GitHub</a>
+                        <a href="https://www.linkedin.com/in/livjot-singh-bedi-3ab997320/" target="_blank" class="social-btn">LinkedIn</a>
+                        <a href="https://instagram.com/liv_s.bedi" target="_blank" class="social-btn">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Interactive Contact / Demo Modal -->
+    <div class="modal-backdrop" id="demoModal">
+        <div class="modal-card">
+            <button class="modal-close" id="modalCloseBtn">&times;</button>
+            <div class="modal-header">
+                <span class="modal-tag">SCHEDULE DEMO / CONSULTATION</span>
+                <h3>Get in Touch with Livjot</h3>
+                <p>Send a direct message to discuss your AI or web development project.</p>
+            </div>
+
+            <form class="modal-form" id="contactForm" onsubmit="event.preventDefault(); alert('Message sent successfully! Livjot will get back to you shortly.'); document.getElementById('demoModal').classList.remove('active');">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Email</label>
+                    <input type="email" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Project Scope</label>
+                    <select required>
+                        <option value="">Select a scope...</option>
+                        <option value="ai">AI / Machine Learning Model</option>
+                        <option value="web">Fintech / Web Application UI</option>
+                        <option value="fullstack">Full-Stack Development</option>
+                        <option value="consulting">General Inquiry</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="4" placeholder="Tell me about your project needs..." required></textarea>
+                </div>
+                <button type="submit" class="btn-modal-submit">Submit Request</button>
+            </form>
         </div>
-    </section>
+    </div>
 
     <!-- Footer -->
-    <footer style="position: relative; overflow: hidden;">
-        <div id="ascii-fire-container" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 250px; z-index: 0; opacity: 0.7; pointer-events: none; mix-blend-mode: plus-lighter;"></div>
-        <div class="footer-content" style="position: relative; z-index: 1;">
-            <div class="footer-logo">
-                <span class="logo-text">LS</span>
-                <span class="logo-dot"></span>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-logo">
+                    <span class="logo-badge">LS</span>
+                    <span class="footer-brand">LIVJOT SINGH</span>
+                </div>
+                <p class="footer-copy">&copy; 2026 Livjot Singh. Crafted with private-banking precision & clean code.</p>
             </div>
-            <p>&copy; 2024 Livjot Singh. Crafted with passion and code.</p>
             <div class="footer-links">
+                <a href="#home">Platform</a>
+                <a href="#about">Architecture</a>
+                <a href="#projects">Case Studies</a>
                 <a href="https://github.com/livbedi2006" target="_blank">GitHub</a>
                 <a href="https://www.linkedin.com/in/livjot-singh-bedi-3ab997320/" target="_blank">LinkedIn</a>
-                <a href="mailto:www.livjotseerat@gmail.com">Email</a>
             </div>
         </div>
     </footer>
 
     <script src="https://unpkg.com/lenis@1.1.5/dist/lenis.min.js"></script>
     <script src="index.js"></script>
-    <script type="module" src="dotted-background.js"></script>
-    <script type="module" src="cosmic-orb-bg.js"></script>
-    <script type="module" src="ascii-fire.js"></script>
-    <script type="module" src="hero-text-particles.js"></script>
 </body>
 </html>
