@@ -29,7 +29,7 @@
 
     let pct = 0;
     const timer = setInterval(() => {
-        pct += Math.random() * 5 + 2;
+        pct += Math.random() * 5 + 3;
         if (pct > 100) pct = 100;
 
         if (label) label.textContent = Math.floor(pct) + '%';
@@ -54,11 +54,25 @@
         }
     }, 40);
 
-    setTimeout(hideNow, 4000);
+    setTimeout(hideNow, 3500);
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Portfolio initialized with Fintech UI aesthetics');
+
+    // ── REVEAL ON SCROLL OBSERVER ────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    function observeReveals() {
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+    observeReveals();
 
     // ── LENIS SMOOTH SCROLL ──────────────────────────────────────────
     if (typeof Lenis !== 'undefined') {
@@ -77,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(raf);
     }
 
-    // ── NAVBAR SCROLL & ACTIVE LINKS ─────────────────────────────────
+    // ── NAVBAR SCROLL & MOBILE HAMBURGER ─────────────────────────────
     const navbarWrapper = document.querySelector('.navbar-wrapper');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 40) {
@@ -86,6 +100,19 @@ document.addEventListener('DOMContentLoaded', () => {
             navbarWrapper?.classList.remove('scrolled');
         }
     });
+
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('mobile-open');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('mobile-open');
+            });
+        });
+    }
 
     // ── THEME TOGGLE ────────────────────────────────────────────────
     const themeToggle = document.getElementById('themeToggle');
@@ -99,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            drawRadarChart(); // Redraw chart with theme colors
+            drawRadarChart();
         });
     }
 
@@ -110,10 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseY = window.innerHeight / 2;
     let followerX = mouseX;
     let followerY = mouseY;
+    let cursorActive = false;
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+        if (!cursorActive) {
+            cursorActive = true;
+            document.body.classList.add('cursor-ready');
+        }
         if (cursorDot) {
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
@@ -140,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const height = canvas.height;
         const centerX = width / 2;
         const centerY = height / 2;
-        const radius = 80;
+        const radius = 75;
 
         ctx.clearRect(0, 0, width, height);
 
@@ -194,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.strokeStyle = gridColor;
             ctx.stroke();
 
-            // Label position
             const labelX = centerX + (radius + 18) * Math.cos(angle);
             const labelY = centerY + (radius + 18) * Math.sin(angle);
             ctx.fillText(skills[i].name, labelX, labelY);
@@ -343,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filtered.forEach(project => {
             const card = document.createElement('div');
-            card.className = 'project-card reveal';
+            card.className = 'project-card reveal active';
             card.innerHTML = `
                 <div class="project-mockup">
                     <div class="mockup-inner">
@@ -367,6 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             projectsGrid.appendChild(card);
         });
+        observeReveals();
     }
 
     // Filter listener
@@ -387,7 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(data => {
             if (Array.isArray(data) && data.length > 0) {
-                // Map real repos into our structure
                 const apiProjects = data.map(repo => ({
                     name: repo.name.replace(/-/g, ' ').toUpperCase(),
                     description: repo.description || 'Open source engineering repository.',
@@ -396,23 +427,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     stars: repo.stargazers_count || 0,
                     repoUrl: repo.html_url
                 }));
-                // Combine or replace default projects cleanly
                 if (apiProjects.length > 0) {
                     defaultProjects.unshift(...apiProjects);
                     renderProjects('all');
                 }
             }
         })
-        .catch(err => console.log('GitHub API offline, using curated fallback repositories:', err));
-
-    // ── REVEAL ON SCROLL ANIMATIONS ─────────────────────────────────
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        .catch(err => console.log('GitHub API fallback in use:', err));
 });
