@@ -243,9 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ctx.closePath();
 
-        ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+        ctx.fillStyle = 'rgba(106, 60, 255, 0.25)';
         ctx.fill();
-        ctx.strokeStyle = '#10b981';
+        ctx.strokeStyle = '#6A3CFF';
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.arc(x, y, 4, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
-            ctx.strokeStyle = '#10b981';
+            ctx.strokeStyle = '#6A3CFF';
             ctx.lineWidth = 2;
             ctx.stroke();
         }
@@ -280,9 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 driftAlertCard.style.borderColor = 'rgba(255, 255, 255, 0.3)';
             } else {
                 driftToggleBtn.textContent = 'Active';
-                driftToggleBtn.style.background = '#10b981';
+                driftToggleBtn.style.background = '#6A3CFF';
                 driftToggleBtn.style.color = '#000000';
-                driftAlertCard.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                driftAlertCard.style.borderColor = 'rgba(106, 60, 255, 0.2)';
             }
         });
     }

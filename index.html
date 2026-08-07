@@ -86,11 +86,12 @@
     <main>
         <!-- HERO SECTION (Inspired by Meridial design in impli.mp4) -->
         <section class="hero-section" id="home">
+            <canvas id="textParticleCanvas" class="particle-canvas"></canvas>
             <div class="hero-container">
                 <!-- Left Hero Copy -->
                 <div class="hero-left reveal">
                     <div class="ticker-badge">
-                        <span class="badge-dot pulse-emerald"></span>
+                        <span class="badge-dot pulse-primary"></span>
                         <span class="badge-text">MANAGING 10+ AI & FULL-STACK PROJECTS</span>
                     </div>
 
@@ -123,9 +124,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
+        <!-- PRODUCT PREVIEW SECTION -->
+        <section class="preview-section">
+            <div class="section-container">
                 <!-- Right Hero Interactive Product Preview (Directly matching impli.mp4) -->
-                <div class="hero-right reveal reveal-delay-1">
+                <div class="hero-right reveal">
                     <div class="product-preview-frame">
                         <!-- Top Bar of Glass Frame -->
                         <div class="preview-header-bar">
@@ -189,12 +195,12 @@
                                 </div>
                                 <div class="sparkline-wrap">
                                     <svg viewBox="0 0 200 40" class="sparkline-svg">
-                                        <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5" fill="none" stroke="#10b981" stroke-width="2.5"/>
+                                        <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5" fill="none" stroke="#6A3CFF" stroke-width="2.5"/>
                                         <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5 L200,40 L0,40 Z" fill="url(#sparkline-grad)" opacity="0.2"/>
                                         <defs>
                                             <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stop-color="#10b981"/>
-                                                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                                                <stop offset="0%" stop-color="#6A3CFF"/>
+                                                <stop offset="100%" stop-color="#6A3CFF" stop-opacity="0"/>
                                             </linearGradient>
                                         </defs>
                                     </svg>
@@ -256,7 +262,7 @@
                                         <svg viewBox="0 0 100 100" class="donut-svg">
                                             <circle cx="50" cy="50" r="38" stroke="rgba(255,255,255,0.08)" stroke-width="12" fill="none"/>
                                             <circle cx="50" cy="50" r="38" stroke="#ffffff" stroke-width="12" fill="none" stroke-dasharray="80 240" stroke-dashoffset="0"/>
-                                            <circle cx="50" cy="50" r="38" stroke="#10b981" stroke-width="12" fill="none" stroke-dasharray="55 240" stroke-dashoffset="-80"/>
+                                            <circle cx="50" cy="50" r="38" stroke="#6A3CFF" stroke-width="12" fill="none" stroke-dasharray="55 240" stroke-dashoffset="-80"/>
                                             <circle cx="50" cy="50" r="38" stroke="#6366f1" stroke-width="12" fill="none" stroke-dasharray="35 240" stroke-dashoffset="-135"/>
                                         </svg>
                                         <div class="donut-center-text">
@@ -272,7 +278,7 @@
                                             <span class="pct">34%</span>
                                         </div>
                                         <div class="legend-item">
-                                            <span class="dot emerald"></span>
+                                            <span class="dot primary"></span>
                                             <span class="name">Web Systems</span>
                                             <span class="pct">34%</span>
                                         </div>
@@ -610,6 +616,7 @@
     </footer>
 
     <script src="https://unpkg.com/lenis@1.1.5/dist/lenis.min.js"></script>
+    <script src="hero-text-particles.js"></script>
     <script src="index.js"></script>
 </body>
 </html>
