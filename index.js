@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const height = canvas.height;
         const centerX = width / 2;
         const centerY = height / 2;
-        const radius = 75;
+        const radius = 60;
 
         ctx.clearRect(0, 0, width, height);
 
