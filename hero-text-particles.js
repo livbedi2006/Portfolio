@@ -121,7 +121,8 @@ class ParticleEngine {
         const startY = this.height / 2 - (this.textLines.length - 1) * lineHeight / 2;
         
         this.textLines.forEach((line, index) => {
-            oCtx.fillText(line, this.width / 2, startY + index * lineHeight);
+            const textX = this.width < 768 ? this.width / 2 : this.width * 0.75;
+            oCtx.fillText(line, textX, startY + index * lineHeight);
         });
         
         const pixels = oCtx.getImageData(0, 0, this.width, this.height).data;

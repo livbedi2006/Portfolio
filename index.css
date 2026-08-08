@@ -555,13 +555,13 @@ body.cursor-ready .cursor-follower { opacity: 1; }
 
 /* Ambient glow removed in favor of Cosmic Orb background */
 .hero-container {
-    max-width: 1000px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
     align-items: center;
-    text-align: center;
     position: relative;
     z-index: 10;
 }
@@ -570,7 +570,8 @@ body.cursor-ready .cursor-follower { opacity: 1; }
 .hero-left {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    text-align: left;
 }
 
 .ticker-badge {
@@ -689,7 +690,7 @@ body.cursor-ready .cursor-follower { opacity: 1; }
 .trust-logos {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.75rem;
     flex-wrap: wrap;
 }
