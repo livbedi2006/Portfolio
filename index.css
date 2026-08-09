@@ -1204,6 +1204,7 @@ body.cursor-ready .cursor-follower { opacity: 1; }
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
+    perspective: 1200px;
 }
 
 .bento-card {
@@ -1213,9 +1214,10 @@ body.cursor-ready .cursor-follower { opacity: 1; }
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    transition: var(--transition);
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .bento-card::after {
@@ -1231,7 +1233,6 @@ body.cursor-ready .cursor-follower { opacity: 1; }
 .bento-card:hover {
     background: var(--bg-card-hover);
     border-color: var(--border-medium);
-    transform: translateY(-4px);
     box-shadow: var(--shadow-card);
 }
 

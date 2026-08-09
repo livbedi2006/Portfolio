@@ -1,4 +1,7 @@
-// Livjot Singh Portfolio JavaScript - High-Trust Fintech UI (impli.mp4 inspired)
+import { animate, inView, stagger, hover } from 'motion';
+import { init3DHero } from './hero-3d.js';
+
+// Livjot Singh Portfolio JavaScript - 3D Design & Fintech UI
 
 (function () {
     // ── LOADING SCREEN CONTROLLER ────────────────────────────────────
@@ -60,19 +63,46 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Portfolio initialized with Fintech UI aesthetics');
 
-    // ── REVEAL ON SCROLL OBSERVER ────────────────────────────────────
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            }
-        });
-    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
+    // ── REVEAL ON SCROLL WITH MOTION.DEV ─────────────────────────────
     function observeReveals() {
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        inView('.reveal', (info) => {
+            animate(info.target, { opacity: [0, 1], y: [50, 0] }, { duration: 0.8, easing: [0.17, 0.55, 0.55, 1] });
+        }, { margin: "-50px" });
     }
     observeReveals();
+
+    // ── INITIALIZE 3D HERO ───────────────────────────────────────────
+    init3DHero();
+
+    // ── 3D BENTO CARD HOVER EFFECTS WITH MOTION.DEV ──────────────────
+    document.querySelectorAll('.bento-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Map mouse position to rotation (-10 to 10 degrees)
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            animate(card, {
+                rotateX,
+                rotateY,
+                scale: 1.02
+            }, { duration: 0.2, easing: "ease-out" });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            animate(card, {
+                rotateX: 0,
+                rotateY: 0,
+                scale: 1
+            }, { duration: 0.5, easing: "ease-out" });
+        });
+    });
 
     // ── LENIS SMOOTH SCROLL ──────────────────────────────────────────
     if (typeof Lenis !== 'undefined') {
@@ -398,7 +428,25 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             projectsGrid.appendChild(card);
         });
-        observeReveals();
+        
+        // Re-initialize motion reveals for dynamically added elements
+        setTimeout(() => {
+            const newCards = projectsGrid.querySelectorAll('.project-card.reveal:not([data-inview])');
+            newCards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(50px)';
+                inView(card, () => {
+                    animate(card, { opacity: 1, y: 0 }, { duration: 0.8, easing: "ease-out" });
+                }, { margin: "-50px" });
+                card.setAttribute('data-inview', 'true');
+                
+                // Add hover effect using motion.dev
+                hover(card, 
+                    () => animate(card, { scale: 1.02, y: -5 }, { duration: 0.3, easing: "ease-out" }),
+                    () => animate(card, { scale: 1, y: 0 }, { duration: 0.3, easing: "ease-out" })
+                );
+            });
+        }, 100);
     }
 
     // Filter listener

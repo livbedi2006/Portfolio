@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/livbedi2006/Portfolio/issues"
   },
-  "homepage": "https://github.com/livbedi2006/Portfolio#readme"
+  "homepage": "https://github.com/livbedi2006/Portfolio#readme",
+  "dependencies": {
+    "motion": "^13.0.0",
+    "three": "^0.185.1",
+    "vite": "^8.2.1"
+  }
 }
