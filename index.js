@@ -63,7 +63,7 @@ import { init3DHero } from './hero-3d.js';
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Portfolio initialized with Fintech UI aesthetics');
 
-    // ── REVEAL ON SCROLL WITH INTERSECTION OBSERVER ──────────────────
+    // ── REVEAL ON SCROLL WITH INTERSECTION OBSERVER & FALLBACK ────────
     function observeReveals() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -72,11 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     observer.unobserve(entry.target);
                 }
             });
-        }, { rootMargin: '0px 0px -50px 0px' });
+        }, { rootMargin: '100px 0px 100px 0px', threshold: 0.01 });
 
         document.querySelectorAll('.reveal').forEach(el => {
             observer.observe(el);
         });
+
+        // Safety fallback to ensure no element remains invisible
+        setTimeout(() => {
+            document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+        }, 800);
     }
     observeReveals();
 
@@ -114,8 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ── LENIS SMOOTH SCROLL ──────────────────────────────────────────
+    let activeLenis = null;
     if (typeof Lenis !== 'undefined') {
-        const lenis = new Lenis({
+        activeLenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
@@ -124,10 +130,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         function raf(time) {
-            lenis.raf(time);
+            activeLenis.raf(time);
             requestAnimationFrame(raf);
         }
         requestAnimationFrame(raf);
+    }
+
+    // ── SMOOTH ANCHOR CLICK NAVIGATION ──────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (!targetId || targetId === '#') return;
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+                e.preventDefault();
+                if (activeLenis) {
+                    activeLenis.scrollTo(targetEl, { offset: -70 });
+                } else {
+                    targetEl.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
+
+    // ── SCROLLSPY ACTIVE NAV LINK HIGHLIGHTING ────────────────────────
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-link[data-section]');
+    if (sections.length > 0 && navItems.length > 0) {
+        const scrollSpyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navItems.forEach(item => {
+                        if (item.getAttribute('data-section') === id) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-20% 0px -50% 0px' });
+
+        sections.forEach(sec => scrollSpyObserver.observe(sec));
+    }
+
+    // ── ANIMATED STAT COUNTERS ────────────────────────────────────────
+    const statNums = document.querySelectorAll('.stat-num[data-target]');
+    if (statNums.length > 0) {
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseFloat(entry.target.getAttribute('data-target'));
+                    const rawText = entry.target.textContent;
+                    const duration = 1500;
+                    const startTime = performance.now();
+                    
+                    function updateCounter(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const currentVal = (progress * target).toFixed(target % 1 === 0 ? 0 : 1);
+                        
+                        if (rawText.includes('+') && rawText.includes('Yrs')) {
+                            entry.target.textContent = currentVal + '+ Yrs';
+                        } else if (rawText.includes('+')) {
+                            entry.target.textContent = currentVal + '+';
+                        } else if (rawText.includes('%')) {
+                            entry.target.textContent = currentVal + '%';
+                        } else {
+                            entry.target.textContent = currentVal;
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        }
+                    }
+                    requestAnimationFrame(updateCounter);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        statNums.forEach(num => counterObserver.observe(num));
     }
 
     // ── NAVBAR SCROLL & MOBILE HAMBURGER ─────────────────────────────
