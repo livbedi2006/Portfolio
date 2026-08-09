@@ -549,7 +549,7 @@ body.cursor-ready .cursor-follower { opacity: 1; }
 .particle-canvas {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 0;
     pointer-events: none;
 }
 
@@ -558,12 +558,13 @@ body.cursor-ready .cursor-follower { opacity: 1; }
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
+    width: 100%;
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
-    position: relative;
-    z-index: 10;
 }
 
 /* Left Column Copy */
