@@ -63,11 +63,20 @@ import { init3DHero } from './hero-3d.js';
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Portfolio initialized with Fintech UI aesthetics');
 
-    // ── REVEAL ON SCROLL WITH MOTION.DEV ─────────────────────────────
+    // ── REVEAL ON SCROLL WITH INTERSECTION OBSERVER ──────────────────
     function observeReveals() {
-        inView('.reveal', (info) => {
-            animate(info.target, { opacity: [0, 1], y: [50, 0] }, { duration: 0.8, easing: [0.17, 0.55, 0.55, 1] });
-        }, { margin: "-50px" });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
     }
     observeReveals();
 
@@ -432,12 +441,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Re-initialize motion reveals for dynamically added elements
         setTimeout(() => {
             const newCards = projectsGrid.querySelectorAll('.project-card.reveal:not([data-inview])');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '0px 0px -50px 0px' });
+            
             newCards.forEach(card => {
-                card.style.opacity = 0;
-                card.style.transform = 'translateY(50px)';
-                inView(card, () => {
-                    animate(card, { opacity: 1, y: 0 }, { duration: 0.8, easing: "ease-out" });
-                }, { margin: "-50px" });
+                observer.observe(card);
                 card.setAttribute('data-inview', 'true');
                 
                 // Add hover effect using motion.dev
