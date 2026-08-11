@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial render
-    renderProjects('ai');
+    renderProjects('all');
 
     // Fetch from GitHub API if available
     fetch('https://api.github.com/users/livbedi2006/repos?sort=updated&per_page=6')
@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }));
                 if (apiProjects.length > 0) {
                     defaultProjects.unshift(...apiProjects);
-                    renderProjects('ai');
+                    renderProjects('all');
                 }
             }
         })
