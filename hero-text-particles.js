@@ -164,7 +164,18 @@ class ParticleEngine {
     }
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    new ParticleEngine('textParticleCanvas');
-});
+}
+
+export function initTextParticles() {
+    return new ParticleEngine('textParticleCanvas');
+}
+
+// Fallback auto-init if loaded standalone
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => initTextParticles());
+    } else {
+        initTextParticles();
+    }
+}
+

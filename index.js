@@ -1,5 +1,6 @@
 import { animate, inView, stagger, hover } from 'motion';
 import { init3DHero } from './hero-3d.js';
+import { initTextParticles } from './hero-text-particles.js';
 
 // Livjot Singh Portfolio JavaScript - 3D Design & Fintech UI
 
@@ -85,8 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     observeReveals();
 
-    // ── INITIALIZE 3D HERO ───────────────────────────────────────────
+    // ── INITIALIZE 3D HERO & TEXT PARTICLES ──────────────────────────
     init3DHero();
+    initTextParticles();
 
     // ── 3D BENTO CARD HOVER EFFECTS WITH MOTION.DEV ──────────────────
     document.querySelectorAll('.bento-card').forEach(card => {
