@@ -164,8 +164,6 @@ class ParticleEngine {
     }
 }
 
-}
-
 export function initTextParticles() {
     return new ParticleEngine('textParticleCanvas');
 }
