@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Livjot Singh | AI/ML Engineer & Full-Stack Developer</title>
     <meta name="description" content="Livjot Singh - AI/ML Engineer & Software Developer building intelligent models, NLP platforms, and high-performance web applications. Inspired by high-trust fintech design.">
-
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,8 +18,8 @@
       }
     }
     </script>
-  <script type="module" crossorigin src="./assets/index-D1PmdGQ5.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BXoVtylT.css">
+  <script type="module" crossorigin src="./assets/index-rVAGDZdY.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Dc-hsxB5.css">
 </head>
 <body>
     <!-- Custom Cursor -->
@@ -94,6 +94,7 @@
         <!-- HERO SECTION (Inspired by Meridial design in impli.mp4) -->
         <section class="hero-section" id="home">
             <div id="hero3d-container" class="particle-canvas"></div>
+            <canvas id="textParticleCanvas" class="text-particle-canvas"></canvas>
             <div class="hero-container">
                 <!-- Left Hero Copy -->
                 <div class="hero-left reveal">
@@ -132,9 +133,9 @@
                     </div>
                 </div>
 
-                <!-- Right Hero Interactive Product Preview -->
+                <!-- Right Hero Interactive Video & System Preview -->
                 <div class="hero-right reveal">
-                    <div class="product-preview-frame">
+                    <div class="product-preview-frame video-preview-frame">
                         <!-- Top Bar of Glass Frame -->
                         <div class="preview-header-bar">
                             <div class="window-controls">
@@ -142,167 +143,23 @@
                                 <span class="dot yellow"></span>
                                 <span class="dot green"></span>
                             </div>
-                            <span class="preview-address">livjotsingh.dev / platform-preview</span>
-                            <span class="preview-status-pill">LIVE SYNC</span>
+                            <span class="preview-address">livjotsingh.dev / system-demo.mp4</span>
+                            <span class="preview-status-pill"><span class="status-pulse-sm"></span> LIVE DEMO</span>
                         </div>
 
-                        <!-- Dashboard Grid Container -->
-                        <div class="preview-dashboard-grid">
-                            
-                            <!-- Card 1: Target Allocation / Skill Matrix -->
-                            <div class="dashboard-card target-card">
-                                <div class="card-top-bar">
-                                    <span class="card-badge">TARGET ALLOCATION</span>
-                                    <span class="card-icon">⚡</span>
-                                </div>
-
-                                <div class="allocation-ratio">
-                                    <div class="ratio-item">
-                                        <span class="ratio-val">60%</span>
-                                        <span class="ratio-label">equity / ml</span>
-                                    </div>
-                                    <div class="ratio-divider">/</div>
-                                    <div class="ratio-item">
-                                        <span class="ratio-val">40%</span>
-                                        <span class="ratio-label">bonds / web</span>
-                                    </div>
-                                </div>
-
-                                <div class="rebalance-alert">
-                                    <div class="alert-icon">!</div>
-                                    <div class="alert-text">
-                                        <strong>REBALANCE NEEDED</strong>
-                                        <span>Skill shift allocation drifted 4.2%</span>
-                                    </div>
-                                </div>
-
-                                <div class="mini-metrics-list">
-                                    <div class="metric-row active">
-                                        <span>+7.2% YTD</span>
-                                        <span class="arrow">›</span>
-                                    </div>
-                                    <div class="metric-row">
-                                        <span>BEST REVIEW Q3</span>
-                                        <span class="arrow">›</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: System Metrics / Trust Card -->
-                            <div class="dashboard-card metric-card">
-                                <span class="card-badge">LIVJOT SYSTEM CLUSTER</span>
-                                <div class="metric-large-wrap">
-                                    <span class="metric-currency">$18,420,500</span>
-                                    <span class="metric-badge green">+2.4%</span>
-                                </div>
-                                <div class="sparkline-wrap">
-                                    <svg viewBox="0 0 200 40" class="sparkline-svg">
-                                        <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5" fill="none" stroke="#6A3CFF" stroke-width="2.5"/>
-                                        <path d="M0,35 Q30,20 60,28 T120,12 T180,18 T200,5 L200,40 L0,40 Z" fill="url(#sparkline-grad)" opacity="0.2"/>
-                                        <defs>
-                                            <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stop-color="#6A3CFF"/>
-                                                <stop offset="100%" stop-color="#6A3CFF" stop-opacity="0"/>
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Real-Time Drift Detection Alert Pill -->
-                            <div class="dashboard-card drift-alert-card" id="driftAlertCard">
-                                <div class="alert-pulse-wrap">
-                                    <span class="pulse-ring"></span>
-                                    <span class="pulse-dot"></span>
-                                </div>
-                                <div class="drift-content">
-                                    <h3>Real-time drift detection</h3>
-                                    <p>From target to rebalance — tracked automatically in real time.</p>
-                                </div>
-                                <button class="btn-drift-toggle" id="driftToggleBtn">Active</button>
-                            </div>
-
-                            <!-- Card 4: Interactive Skill Radar Chart Card -->
-                            <div class="dashboard-card radar-card">
-                                <div class="card-top-bar">
-                                    <div>
-                                        <span class="card-badge">DEVELOPER ACTIVITY</span>
-                                        <h4 class="card-title-sm">Technical Profile</h4>
-                                    </div>
-                                    <span class="pill-history">FULL HISTORY</span>
-                                </div>
-
-                                <div class="radar-chart-container">
-                                    <canvas id="skillRadarCanvas" width="160" height="160"></canvas>
-                                </div>
-
-                                <div class="radar-stats-grid">
-                                    <div class="stat-pill">
-                                        <span class="num">218</span>
-                                        <span class="lbl">Commits</span>
-                                    </div>
-                                    <div class="stat-pill">
-                                        <span class="num">35</span>
-                                        <span class="lbl">Models</span>
-                                    </div>
-                                    <div class="stat-pill">
-                                        <span class="num">74</span>
-                                        <span class="lbl">Risk profile</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 5: Portfolio Composition & Asset Breakdown -->
-                            <div class="dashboard-card composition-card">
-                                <div class="card-top-bar">
-                                    <span class="card-badge">PORTFOLIO COMPOSITION</span>
-                                    <span class="pill-history">ASSET CLASS</span>
-                                </div>
-
-                                <div class="donut-chart-row">
-                                    <div class="donut-wrap">
-                                        <svg viewBox="0 0 100 100" class="donut-svg">
-                                            <circle cx="50" cy="50" r="38" stroke="rgba(255,255,255,0.08)" stroke-width="12" fill="none"/>
-                                            <circle cx="50" cy="50" r="38" stroke="#ffffff" stroke-width="12" fill="none" stroke-dasharray="80 240" stroke-dashoffset="0"/>
-                                            <circle cx="50" cy="50" r="38" stroke="#6A3CFF" stroke-width="12" fill="none" stroke-dasharray="55 240" stroke-dashoffset="-80"/>
-                                            <circle cx="50" cy="50" r="38" stroke="#6366f1" stroke-width="12" fill="none" stroke-dasharray="35 240" stroke-dashoffset="-135"/>
-                                        </svg>
-                                        <div class="donut-center-text">
-                                            <span>100%</span>
-                                            <span class="sub">Active</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="composition-legend">
-                                        <div class="legend-item">
-                                            <span class="dot white"></span>
-                                            <span class="name">Machine Learning</span>
-                                            <span class="pct">34%</span>
-                                        </div>
-                                        <div class="legend-item">
-                                            <span class="dot primary"></span>
-                                            <span class="name">Web Systems</span>
-                                            <span class="pct">34%</span>
-                                        </div>
-                                        <div class="legend-item">
-                                            <span class="dot indigo"></span>
-                                            <span class="name">APIs & Backend</span>
-                                            <span class="pct">23%</span>
-                                        </div>
-                                        <div class="legend-item">
-                                            <span class="dot gray"></span>
-                                            <span class="name">Tools & Automation</span>
-                                            <span class="pct">9%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div> <!-- /preview-dashboard-grid -->
+                        <!-- Video Player Wrapper -->
+                        <div class="preview-video-wrapper">
+                            <video id="heroVideo" class="hero-video-player" autoplay loop muted playsinline preload="auto">
+                                <source src="./assets/hero-video-CaKVb1e9.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="video-overlay-gradient"></div>
+                        </div>
                         
                         <div class="preview-footer-banner">
                             <span>Every model, every application, one clear signal</span>
                         </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -616,6 +473,6 @@
         </div>
     </footer>
 
-    <script src="https://unpkg.com/lenis@1.1.5/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.5/dist/lenis.min.js"></script>
 </body>
 </html>
