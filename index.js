@@ -88,7 +88,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── INITIALIZE 3D HERO & TEXT PARTICLES ──────────────────────────
     init3DHero();
-    initTextParticles();
+    const particleEngine = initTextParticles();
+
+    // Glass Card Preset Controls
+    const presetBtns = document.querySelectorAll('.glass-preset-btn');
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            presetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            try {
+                const lines = JSON.parse(btn.getAttribute('data-lines'));
+                if (particleEngine && particleEngine.setText) {
+                    particleEngine.setText(lines);
+                }
+            } catch (err) {
+                console.error("Error parsing preset lines", err);
+            }
+        });
+    });
+
+    // 3D Glass Space Card Hover Tilt
+    const glassCard = document.getElementById('heroGlassCard');
+    if (glassCard) {
+        glassCard.addEventListener('mousemove', (e) => {
+            const rect = glassCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -8;
+            const rotateY = ((x - centerX) / centerX) * 8;
+            
+            animate(glassCard, {
+                rotateX,
+                rotateY,
+                scale: 1.01
+            }, { duration: 0.2, easing: "ease-out" });
+        });
+        
+        glassCard.addEventListener('mouseleave', () => {
+            animate(glassCard, {
+                rotateX: 0,
+                rotateY: 0,
+                scale: 1
+            }, { duration: 0.5, easing: "ease-out" });
+        });
+    }
 
     // ── 3D BENTO CARD HOVER EFFECTS WITH MOTION.DEV ──────────────────
     document.querySelectorAll('.bento-card').forEach(card => {
