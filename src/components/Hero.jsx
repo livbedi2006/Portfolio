@@ -75,18 +75,6 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <motion.div
-              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2 mb-7 px-3 py-1.5 rounded-full border border-line bg-white/[0.03]"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-ok pulse-dot" aria-hidden="true" />
-              <span className="font-mono text-[11px] text-paper-dim tracking-wide">
-                currently: final-year cse (ai/ml) · taking freelance ml work
-              </span>
-            </motion.div>
-
             <motion.h1
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}

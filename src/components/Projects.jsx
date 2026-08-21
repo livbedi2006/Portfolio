@@ -75,11 +75,11 @@ const PROJECTS = [
 ];
 
 const FILTERS = [
-  { id: 'all', label: 'all' },
   { id: 'cv', label: 'vision' },
   { id: 'nlp', label: 'nlp' },
   { id: 'ml', label: 'ml' },
   { id: 'web', label: 'web' },
+  { id: 'all', label: 'all' },
 ];
 
 const GH = 'https://github.com/livbedi2006/';
@@ -97,7 +97,7 @@ export default function Projects() {
         <Reveal className="mb-10">
           <span className="mono-label">02 / work</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-3 mb-4 grad-text">
-            Six real repos, with the caveats
+            GitHub project repos
           </h2>
           <p className="text-paper-dim text-sm sm:text-base max-w-2xl leading-relaxed">
             Every card links to actual source. Each one lists what it does, how it
