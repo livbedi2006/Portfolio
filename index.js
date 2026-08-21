@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    function renderProjects(categoryFilter = 'all') {
+    function renderProjects(categoryFilter = 'ai') {
         if (!projectsGrid) return;
         projectsGrid.innerHTML = '';
 
@@ -604,8 +604,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Helper to get currently active filter
+    const getActiveFilter = () => document.querySelector('.filter-btn.active')?.getAttribute('data-filter') || 'ai';
+
     // Initial render
-    renderProjects('all');
+    renderProjects(getActiveFilter());
 
     // Fetch from GitHub API if available
     fetch('https://api.github.com/users/livbedi2006/repos?sort=updated&per_page=6')
@@ -622,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }));
                 if (apiProjects.length > 0) {
                     defaultProjects.unshift(...apiProjects);
-                    renderProjects('all');
+                    renderProjects(getActiveFilter());
                 }
             }
         })
