@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Globe, Tool, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Cpu, Globe, Wrench, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 
 const services = [
   {
@@ -18,7 +18,7 @@ const services = [
     features: ['React & Next.js Systems', 'Three.js & Canvas Motion', 'Tailwind & Modern CSS', 'REST & GraphQL APIs']
   },
   {
-    icon: Tool,
+    icon: Wrench,
     title: 'Tooling & Data Pipelines',
     tag: 'AUTOMATION & ETL',
     description: 'Asynchronous high-throughput ETL data generators, Python developer utilities, and cloud ML deployment workflows.',
