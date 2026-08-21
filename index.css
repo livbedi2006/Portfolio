@@ -2321,3 +2321,81 @@ body.cursor-ready .cursor-follower { opacity: 1; }
     .contact-grid { gap: 0.8rem; }
     .contact-info-card { padding: 1rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   §18  HIGH-END MOTION & SPOTLIGHT ANIMATION OVERLAYS
+   ═══════════════════════════════════════════════════════════════════ */
+.spotlight-card {
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.spotlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(124, 77, 255, 0.18), rgba(64, 196, 255, 0.08) 30%, transparent 70%);
+}
+
+.spotlight-card:hover::before {
+    opacity: 1;
+}
+
+/* Glass Border Light Sweep */
+.spotlight-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.35), transparent 60%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 3;
+}
+
+.spotlight-card:hover::after {
+    opacity: 1;
+}
+
+/* Interactive Click Shockwave Ripple Ring */
+.click-shockwave {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    background: radial-gradient(circle, rgba(124, 77, 255, 0.45) 0%, rgba(64, 196, 255, 0.25) 40%, transparent 70%);
+    border: 1.5px solid rgba(124, 77, 255, 0.7);
+    box-shadow: 0 0 25px rgba(124, 77, 255, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%) scale(0);
+}
+
+/* Magnetic Element Transition */
+.magnetic-btn, .btn-primary-hero, .btn-secondary-hero, .filter-btn, .nav-link, .btn-outline-fintech {
+    will-change: transform;
+}
+
+/* Animated Tech Tag Float & Pulse */
+.tech-tag, .bento-pill, .trust-logo {
+    will-change: transform;
+}
+
+/* Animated Stat Counter Number Glow */
+.stat-num {
+    background: linear-gradient(135deg, #fff 30%, var(--primary-color, #7c4dff) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    will-change: transform, opacity;
+}
+

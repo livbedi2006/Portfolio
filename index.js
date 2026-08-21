@@ -62,7 +62,7 @@ import { initTextParticles } from './hero-text-particles.js';
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Portfolio initialized with Fintech UI aesthetics');
+    console.log('Portfolio initialized with Fintech UI aesthetics & Motion animations');
 
     // ── REVEAL ON SCROLL WITH INTERSECTION OBSERVER & FALLBACK ────────
     function observeReveals() {
@@ -108,63 +108,129 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3D Glass Space Card Hover Tilt
-    const glassCard = document.getElementById('heroGlassCard');
-    if (glassCard) {
-        glassCard.addEventListener('mousemove', (e) => {
-            const rect = glassCard.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -8;
-            const rotateY = ((x - centerX) / centerX) * 8;
-            
-            animate(glassCard, {
-                rotateX,
-                rotateY,
-                scale: 1.01
-            }, { duration: 0.2, easing: "ease-out" });
-        });
-        
-        glassCard.addEventListener('mouseleave', () => {
-            animate(glassCard, {
-                rotateX: 0,
-                rotateY: 0,
-                scale: 1
-            }, { duration: 0.5, easing: "ease-out" });
+    // ── 1. MAGNETIC BUTTON SPRING PHYSICS ───────────────────────────
+    function initMagneticElements() {
+        const magneticSelectors = '.btn-primary-hero, .btn-secondary-hero, .filter-btn, .btn-outline-fintech, .magnetic-btn, .open-modal-btn, .glass-preset-btn';
+        document.querySelectorAll(magneticSelectors).forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const deltaX = (e.clientX - centerX) * 0.35;
+                const deltaY = (e.clientY - centerY) * 0.35;
+
+                animate(btn, { x: deltaX, y: deltaY }, { duration: 0.15, easing: "ease-out" });
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                animate(btn, { x: 0, y: 0 }, { duration: 0.6, easing: [0.34, 1.56, 0.64, 1] });
+            });
         });
     }
+    initMagneticElements();
 
-    // ── 3D BENTO CARD HOVER EFFECTS WITH MOTION.DEV ──────────────────
-    document.querySelectorAll('.bento-card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            // Map mouse position to rotation (-10 to 10 degrees)
-            const rotateX = ((y - centerY) / centerY) * -10;
-            const rotateY = ((x - centerX) / centerX) * 10;
-            
-            animate(card, {
-                rotateX,
-                rotateY,
-                scale: 1.02
-            }, { duration: 0.2, easing: "ease-out" });
+    // ── 2. 3D SPOTLIGHT TILT & RADIAL LIGHT OVERLAYS ────────────────
+    function initSpotlightCards() {
+        const cardSelectors = '.bento-card, .project-card, .service-card, .contact-info-card, .glass-space-card, .radar-card, .drift-alert-card, .timeline-card';
+        document.querySelectorAll(cardSelectors).forEach(card => {
+            card.classList.add('spotlight-card');
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -7;
+                const rotateY = ((x - centerX) / centerX) * 7;
+
+                animate(card, {
+                    rotateX,
+                    rotateY,
+                    scale: 1.015
+                }, { duration: 0.15, easing: "ease-out" });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                animate(card, {
+                    rotateX: 0,
+                    rotateY: 0,
+                    scale: 1
+                }, { duration: 0.45, easing: "ease-out" });
+            });
         });
-        
-        card.addEventListener('mouseleave', () => {
-            animate(card, {
-                rotateX: 0,
-                rotateY: 0,
-                scale: 1
-            }, { duration: 0.5, easing: "ease-out" });
+    }
+    initSpotlightCards();
+
+    // ── 3. ANIMATED METRIC COUNTER UP EFFECT ────────────────────────
+    function initCounterUp() {
+        const statElements = document.querySelectorAll('.stat-num');
+        statElements.forEach(el => {
+            const rawText = el.textContent.trim();
+            const numMatch = rawText.match(/[\d.]+/);
+            if (!numMatch) return;
+            
+            const targetVal = parseFloat(numMatch[0]);
+            const prefix = rawText.substring(0, rawText.indexOf(numMatch[0]));
+            const suffix = rawText.substring(rawText.indexOf(numMatch[0]) + numMatch[0].length);
+            const isFloat = numMatch[0].includes('.');
+
+            inView(el, () => {
+                let obj = { val: 0 };
+                animate(obj, { val: targetVal }, {
+                    duration: 1.8,
+                    easing: [0.16, 1, 0.3, 1],
+                    onUpdate: (latest) => {
+                        const currentNum = isFloat ? latest.val.toFixed(1) : Math.floor(latest.val);
+                        el.textContent = `${prefix}${currentNum}${suffix}`;
+                    }
+                });
+            }, { amount: 0.5 });
         });
-    });
+    }
+    initCounterUp();
+
+    // ── 4. FLOATING TECH TAG PHYSICS ────────────────────────────────
+    function initFloatingPhysics() {
+        document.querySelectorAll('.tech-tag, .bento-pill, .trust-logo').forEach((tag, idx) => {
+            const delay = (idx % 5) * 0.2;
+            const duration = 3.5 + (idx % 4) * 0.7;
+            animate(tag, 
+                { y: [0, -5, 0], rotate: [0, idx % 2 === 0 ? 1.2 : -1.2, 0] }, 
+                { duration, delay, repeat: Infinity, easing: "easeInOut" }
+            );
+        });
+    }
+    initFloatingPhysics();
+
+    // ── 5. CLICK SHOCKWAVE RIPPLE RING EFFECT ───────────────────────
+    function initClickShockwave() {
+        document.addEventListener('click', (e) => {
+            const shock = document.createElement('div');
+            shock.className = 'click-shockwave';
+            shock.style.left = `${e.clientX}px`;
+            shock.style.top = `${e.clientY}px`;
+            shock.style.width = '50px';
+            shock.style.height = '50px';
+            document.body.appendChild(shock);
+
+            const animation = animate(shock, 
+                { scale: [0, 3.5], opacity: [0.8, 0] }, 
+                { duration: 0.5, easing: "ease-out" }
+            );
+            
+            if (animation.finished) {
+                animation.finished.then(() => shock.remove());
+            } else {
+                setTimeout(() => shock.remove(), 550);
+            }
+        });
+    }
+    initClickShockwave();
 
     // ── LENIS SMOOTH SCROLL ──────────────────────────────────────────
     let activeLenis = null;
