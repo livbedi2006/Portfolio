@@ -6,6 +6,7 @@ import { Github } from '../lib/icons.jsx';
 const NAV = [
   { id: 'playground', label: 'playground' },
   { id: 'work', label: 'work' },
+  { id: 'about', label: 'about' },
   { id: 'build', label: 'build' },
   { id: 'contact', label: 'contact' },
 ];
@@ -63,12 +64,8 @@ export default function Navbar() {
             <div className="w-9 h-9 rounded-lg border border-line-hard bg-ink-750 flex items-center justify-center text-paper font-mono font-bold text-sm">
               lb
             </div>
-            <div className="hidden sm:flex flex-col leading-tight">
+            <div className="hidden sm:flex items-center leading-tight">
               <span className="font-mono text-sm text-paper">livjot bedi</span>
-              <span className="text-[11px] font-mono text-ok flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-ok pulse-dot inline-block" aria-hidden="true" />
-                available for freelance
-              </span>
             </div>
           </a>
 

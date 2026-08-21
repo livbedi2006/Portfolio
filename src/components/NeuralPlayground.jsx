@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Cpu, Activity, Layers } from 'lucide-react';
+import { Play, Pause, RotateCcw, Cpu, Layers } from 'lucide-react';
 import { MLP, makeDataset } from '../lib/nn.js';
 
 /* Palette — data classes use the CVD-validated blue/red pair.
@@ -19,6 +19,7 @@ const DATASETS = [
 
 const BOUND_RES = 56; // decision-field grid resolution (offscreen, scaled up)
 const LAYER_LABELS = ['hidden 1 · 8', 'hidden 2 · 8', 'out · 1'];
+const LOSS_PTS = 180; // retained loss samples before the series is halved
 
 export default function NeuralPlayground() {
   const boundaryRef = useRef(null);
@@ -132,8 +133,11 @@ export default function NeuralPlayground() {
 
     const hist = lossHistRef.current;
     if (hist.length < 2) return;
-    const maxL = Math.max(...hist, 0.75);
-    const pad = 5;
+    // Scale to the real peak (BCE starts near ln2 ≈ 0.69), not a fixed ceiling,
+    // so the descent always fills the panel.
+    const maxL = Math.max(Math.max(...hist), 0.05);
+    const dpr = dprRef.current;
+    const pad = Math.round(5 * dpr);
     const px = (i) => (i / (hist.length - 1)) * (W - pad * 2) + pad;
     const py = (l) => H - pad - (l / maxL) * (H - pad * 2);
 
@@ -148,14 +152,20 @@ export default function NeuralPlayground() {
     ctx.beginPath();
     hist.forEach((l, i) => (i === 0 ? ctx.moveTo(px(i), py(l)) : ctx.lineTo(px(i), py(l))));
     ctx.strokeStyle = C.accent;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = Math.max(1, 2 * dpr);
     ctx.lineJoin = 'round';
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(px(hist.length - 1), py(hist[hist.length - 1]), 3, 0, Math.PI * 2);
+    ctx.arc(px(hist.length - 1), py(hist[hist.length - 1]), Math.max(2, 3 * dpr), 0, Math.PI * 2);
     ctx.fillStyle = C.accent;
     ctx.fill();
+
+    // A sparkline with no y reference isn't readable — state the peak.
+    ctx.font = `${Math.round(8 * dpr)}px ui-monospace, monospace`;
+    ctx.fillStyle = 'rgba(138,138,147,1)';
+    ctx.textBaseline = 'top';
+    ctx.fillText(maxL.toFixed(2), pad, pad - 2 * dpr);
   }, []);
 
   /* Per-neuron mean |weight|, one bar per neuron, grouped by layer.
@@ -249,7 +259,15 @@ export default function NeuralPlayground() {
     epochRef.current += iters;
     const hist = lossHistRef.current;
     hist.push(loss);
-    if (hist.length > 160) hist.shift();
+    // Decimate instead of using a sliding window. A sliding window eventually
+    // holds nothing but the converged tail, so the curve goes flat and the
+    // actual drop — the whole point — scrolls out of view. Halving the
+    // resolution keeps the trajectory from epoch 0 at bounded memory.
+    if (hist.length > LOSS_PTS * 2) {
+      const next = [];
+      for (let i = 0; i < hist.length; i += 2) next.push(hist[i]);
+      lossHistRef.current = next;
+    }
 
     // Canvases repaint every frame; the numeric readout is throttled to ~10Hz.
     // Digits changing 60×/sec are unreadable, and accuracy() is a full forward
@@ -419,7 +437,9 @@ export default function NeuralPlayground() {
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="mono-label">loss (BCE)</span>
-              <Activity className="w-3.5 h-3.5 text-accent-lt" aria-hidden="true" />
+              <span className="font-mono text-[10px] text-paper-mut">
+                epoch 0 → {stats.epoch}
+              </span>
             </div>
             <div className="rounded-lg border border-line bg-ink-900 p-1">
               <canvas ref={lossRef} className="w-full h-16 block" aria-label="Training loss curve" role="img" />
