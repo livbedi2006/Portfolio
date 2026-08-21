@@ -1,199 +1,239 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ExternalLink, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ExternalLink, Github, ChevronDown, AlertTriangle } from 'lucide-react';
+import { Reveal } from '../lib/motion.jsx';
 
-const projectsData = [
+/* ============================================================
+   Every entry below maps to a real public repo. No invented
+   metrics, no invented names, no star counts. Where a project
+   has a known weakness, it is written down — the "limits" field
+   is not optional.
+   ============================================================ */
+const PROJECTS = [
   {
-    id: 1,
-    name: 'AI Exam Invigilation System',
-    description: 'Real-time automated proctoring application utilizing computer vision, pose estimation, and face tracking algorithms.',
-    category: 'ai',
-    language: 'Python / OpenCV',
-    stars: 12,
-    repoUrl: 'https://github.com/livbedi2006'
+    repo: 'Plagiarism-Detector',
+    title: 'Plagiarism detector',
+    kind: 'nlp',
+    lang: 'Python',
+    what: 'Flags copied text across a set of student submissions and reports a similarity score per pair.',
+    how: 'TF-IDF vectorization over cleaned tokens, then cosine similarity between document vectors. Threshold chosen by hand on a small labelled sample.',
+    limits:
+      'TF-IDF is lexical, not semantic — it matches shared words, so it reliably catches copy-paste and reliably misses paraphrase. Swapping in sentence embeddings is the obvious next step, and I have not measured that delta yet.',
   },
   {
-    id: 2,
-    name: 'NLP Plagiarism Detector',
-    description: 'Advanced semantic text comparison tool leveraging TF-IDF vectorization and cosine similarity metrics.',
-    category: 'ai',
-    language: 'Python / NLTK',
-    stars: 18,
-    repoUrl: 'https://github.com/livbedi2006'
+    repo: 'Placemux-exam-portal',
+    title: 'Placemux — proctored exam portal',
+    kind: 'cv',
+    lang: 'TypeScript',
+    what: 'An exam portal with a webcam-based invigilation layer that flags suspicious behaviour during a test and evaluates the submission.',
+    how: 'Browser-side face and pose signals drive a heuristic flagging layer; the portal handles the exam lifecycle, timing and evaluation.',
+    limits:
+      'Automated proctoring is the riskiest thing here and I want to be direct about it. A false flag costs a student far more than a missed one costs the institution, so the threshold should be tuned for high precision, not high recall — and a human should make the final call, always. I have not measured per-subgroup false-positive rates (skin tone, lighting, glasses, disability, background), which is exactly where systems like this are documented to fail. Until that is measured I would not ship it as an automatic decision-maker; it is a "surface this clip to a human" tool.',
+    flag: true,
   },
   {
-    id: 3,
-    name: 'Fintech Portfolio Web App',
-    description: 'Ultra-responsive dark grain private-banking UI featuring interactive dashboard previews, metrics, and radar charts.',
-    category: 'web',
-    language: 'JavaScript / CSS3',
-    stars: 24,
-    repoUrl: 'https://github.com/livbedi2006'
+    repo: 'Examination_portal',
+    title: 'Examination portal',
+    kind: 'web',
+    lang: 'Python',
+    what: 'The exam-delivery side of the above: setup, environment control, question flow and a private-invigilator experience.',
+    how: 'Python backend handling exam sessions, question delivery and result capture.',
+    limits:
+      'Single-instance, not load-tested. No concurrency benchmarking, so I cannot tell you what it does under a real cohort of a few hundred simultaneous students.',
   },
   {
-    id: 4,
-    name: 'Model Drift Monitoring Suite',
-    description: 'Lightweight Python utility for tracking concept drift and dataset shift in real-time machine learning pipelines.',
-    category: 'tools',
-    language: 'Python / Scikit-Learn',
-    stars: 8,
-    repoUrl: 'https://github.com/livbedi2006'
+    repo: 'description-matching-system',
+    title: 'Description matching system',
+    kind: 'nlp',
+    lang: 'Python',
+    what: 'Scores how well a student profile matches a chosen job description, for a placement workflow.',
+    how: 'Text features from both sides, then a similarity/ranking model to order candidates against a description.',
+    limits:
+      'Evaluated on a small internal set, so the ranking quality has no held-out benchmark behind it yet. It also inherits whatever bias is in the profile text — a matcher will happily learn to prefer whoever writes the most keyword-dense CV.',
   },
   {
-    id: 5,
-    name: 'Neural Network Visualizer',
-    description: 'Interactive HTML5 canvas tool to visualize layer weights, activations, and backpropagation gradients.',
-    category: 'web',
-    language: 'JavaScript / HTML5',
-    stars: 15,
-    repoUrl: 'https://github.com/livbedi2006'
+    repo: 'Medicine_Scan',
+    title: 'Medify — medicine scan & verification',
+    kind: 'web',
+    lang: 'HTML',
+    what: 'Scan a QR or barcode on a medicine pack, then verify the user two ways and check where the scan happened.',
+    how: 'Three-step flow: code scan → two-factor identity check → location check at scan time. Aimed at spotting counterfeit or diverted stock.',
+    limits:
+      'Verification is only as good as the code on the pack — a cloned QR passes. The location check tells you where a scan happened, not whether the medicine is genuine. Real anti-counterfeit work needs a serialized registry, which this does not have.',
   },
   {
-    id: 6,
-    name: 'Automated Data Pipeline Engine',
-    description: 'High-throughput asynchronous ETL pipeline generator designed for Machine Learning feature engineering.',
-    category: 'tools',
-    language: 'Python / GCP',
-    stars: 10,
-    repoUrl: 'https://github.com/livbedi2006'
-  }
+    repo: 'Machine_learning_techniques',
+    title: 'ML techniques — worked notes',
+    kind: 'ml',
+    lang: 'Jupyter / Python',
+    what: 'A structured walk from basic to more advanced model-training techniques, kept as a reference I actually reuse.',
+    how: 'Organised notebooks/scripts covering preprocessing, training and evaluation patterns, ordered so each builds on the last.',
+    limits:
+      'This is a learning repo, not a library. It is written to be read, not imported, and some of the earlier sections use small toy datasets.',
+  },
 ];
 
-const categories = [
-  { id: 'all', label: 'All Projects' },
-  { id: 'ai', label: 'AI & ML' },
-  { id: 'web', label: 'Web Systems' },
-  { id: 'tools', label: 'Tools' }
+const FILTERS = [
+  { id: 'all', label: 'all' },
+  { id: 'cv', label: 'vision' },
+  { id: 'nlp', label: 'nlp' },
+  { id: 'ml', label: 'ml' },
+  { id: 'web', label: 'web' },
 ];
+
+const GH = 'https://github.com/livbedi2006/';
 
 export default function Projects() {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [filter, setFilter] = useState('all');
+  const [open, setOpen] = useState(null);
+  const reduce = useReducedMotion();
 
-  const filteredProjects = activeCategory === 'all'
-    ? projectsData
-    : projectsData.filter((p) => p.category === activeCategory);
+  const shown = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.kind === filter);
 
   return (
-    <section className="py-24 relative" id="projects">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-2xl mx-auto mb-12"
-        >
-          <span className="text-xs font-mono font-semibold tracking-widest text-purple-400 uppercase bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20 inline-block mb-3">
-            CASE STUDIES
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
-            Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-300 to-cyan-400">GitHub Repositories</span>
+    <section id="work" className="py-24 relative">
+      <div className="max-w-6xl mx-auto px-6">
+        <Reveal className="mb-10">
+          <span className="mono-label">02 / work</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-3 mb-4 grad-text">
+            Six real repos, with the caveats
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base">
-            Explore open-source engineering systems crafted with clean code, modular architecture, and high performance.
+          <p className="text-paper-dim text-sm sm:text-base max-w-2xl leading-relaxed">
+            Every card links to actual source. Each one lists what it does, how it
+            does it, and where it falls over — that last part is the one I'd want to
+            read if I were hiring.
           </p>
-        </motion.div>
+        </Reveal>
 
-        {/* Filter Category Bar with Framer Motion layoutId sliding pill */}
-        <div className="flex justify-center mb-12">
-          <div className="flex items-center gap-1.5 bg-slate-950/80 p-1.5 rounded-full border border-white/10 backdrop-blur-xl">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className="relative px-5 py-2 text-xs font-mono font-semibold text-slate-300 hover:text-white transition-colors"
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeFilterPill"
-                      className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full shadow-lg shadow-purple-600/30"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10">{cat.label}</span>
-                </button>
-              );
-            })}
-          </div>
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-1.5 mb-8 p-1 rounded-xl border border-line bg-white/[0.02] w-fit" role="group" aria-label="Filter projects">
+          {FILTERS.map((f) => {
+            const isActive = filter === f.id;
+            return (
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                aria-pressed={isActive}
+                className="relative px-4 py-1.5 font-mono text-xs text-paper-dim hover:text-paper transition-colors"
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="workFilterPill"
+                    className="absolute inset-0 rounded-lg bg-accent"
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <span className={`relative z-10 ${isActive ? 'text-white font-semibold' : ''}`}>
+                  {f.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Projects Grid with Framer Motion AnimatePresence */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {/* Cards */}
+        <motion.div layout className="grid md:grid-cols-2 gap-5">
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className="group relative bg-slate-950/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 flex flex-col justify-between hover:border-purple-500/40 transition-colors shadow-xl overflow-hidden"
-              >
-                <div>
-                  {/* Category Badge */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-mono font-bold tracking-wider px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 uppercase">
-                      {project.category}
-                    </span>
-                    <div className="flex items-center gap-1 text-amber-400 text-xs font-mono">
-                      <Star className="w-3.5 h-3.5 fill-amber-400" />
-                      <span>{project.stars}</span>
+            {shown.map((p) => {
+              const isOpen = open === p.repo;
+              return (
+                <motion.article
+                  key={p.repo}
+                  layout
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                  className="spotlight group rounded-2xl border border-line bg-ink-800/60 backdrop-blur-sm p-5 flex flex-col hover:border-line-hard transition-colors"
+                >
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-line text-paper-mut">
+                            {p.kind}
+                          </span>
+                          <span className="font-mono text-[10px] text-paper-mut">{p.lang}</span>
+                          {p.flag && (
+                            <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[#fab219]/30 bg-[#fab219]/10 text-[#fab219] flex items-center gap-1">
+                              <AlertTriangle className="w-2.5 h-2.5" aria-hidden="true" />
+                              ethics note
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="text-lg font-bold text-paper leading-snug">{p.title}</h3>
+                      </div>
+                      <a
+                        href={GH + p.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 p-2 rounded-lg bg-white/[0.04] border border-line text-paper-dim hover:text-paper hover:bg-white/10 transition-colors"
+                        aria-label={`View ${p.title} source on GitHub`}
+                      >
+                        <Github className="w-4 h-4" aria-hidden="true" />
+                      </a>
+                    </div>
+
+                    <p className="text-paper-dim text-[13px] leading-relaxed mb-3">{p.what}</p>
+
+                    <div className="mb-4">
+                      <span className="mono-label text-[9px]">method</span>
+                      <p className="text-paper-mut text-[12.5px] leading-relaxed mt-1">{p.how}</p>
+                    </div>
+
+                    {/* Limits disclosure */}
+                    <div className="mt-auto pt-3 border-t border-line-soft">
+                      <button
+                        onClick={() => setOpen(isOpen ? null : p.repo)}
+                        aria-expanded={isOpen}
+                        className="w-full flex items-center justify-between font-mono text-[11px] text-paper-dim hover:text-paper transition-colors"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <span className="text-[#fab219]">!</span> limits &amp; what I'd fix
+                        </span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                          aria-hidden="true"
+                        />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <p className="text-paper-mut text-[12.5px] leading-relaxed pt-3">
+                              {p.limits}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
-
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
-                    {project.name}
-                  </h3>
-
-                  <p className="text-slate-400 text-xs leading-relaxed mb-6">
-                    {project.description}
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                    <span className="text-xs font-mono text-slate-300">
-                      {project.language}
-                    </span>
-
-                    <motion.a
-                      href={project.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-white/[0.05] border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1 text-xs"
-                    >
-                      <span>View Source</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </motion.a>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.article>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
 
-        {/* View Repos Button */}
-        <div className="text-center">
-          <motion.a
+        <Reveal className="mt-10 flex flex-wrap items-center gap-4">
+          <a
             href="https://github.com/livbedi2006?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/[0.05] border border-white/15 text-white font-medium text-xs hover:bg-white/10 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] border border-line text-paper font-mono text-xs hover:bg-white/[0.08] transition-colors"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4M9 18c-4.51 2-5-2-7-2"/></svg>
-            <span>View all repositories on GitHub</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </motion.a>
-        </div>
+            <Github className="w-4 h-4" aria-hidden="true" />
+            <span>all repositories</span>
+            <ExternalLink className="w-3 h-3" aria-hidden="true" />
+          </a>
+          <p className="font-mono text-[11px] text-paper-mut">
+            no star counts shown — they'd be flattering to nobody and easy to check
+          </p>
+        </Reveal>
       </div>
     </section>
   );
