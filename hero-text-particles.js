@@ -1,16 +1,15 @@
 class Particle {
     constructor(x, y, color, boundsWidth, boundsHeight) {
-        // Start from random point inside container or slightly dispersed
         this.x = Math.random() * (boundsWidth || 600);
         this.y = Math.random() * (boundsHeight || 400);
         this.originX = x;
         this.originY = y;
-        this.vx = (Math.random() - 0.5) * 8;
-        this.vy = (Math.random() - 0.5) * 8;
+        this.vx = (Math.random() - 0.5) * 6;
+        this.vy = (Math.random() - 0.5) * 6;
         this.color = color;
-        this.size = Math.random() * 1.4 + 0.8;
-        this.friction = 0.85;
-        this.springFactor = 0.06;
+        this.size = Math.random() * 1.5 + 1.0;
+        this.friction = 0.84;
+        this.springFactor = 0.07;
     }
 
     update(mouse) {
@@ -22,8 +21,8 @@ class Particle {
         if (distance < mouse.radius) {
             let force = (mouse.radius - distance) / mouse.radius;
             let angle = Math.atan2(dy, dx);
-            let repelX = Math.cos(angle) * force * 18;
-            let repelY = Math.sin(angle) * force * 18;
+            let repelX = Math.cos(angle) * force * 20;
+            let repelY = Math.sin(angle) * force * 20;
             
             this.vx -= repelX;
             this.vy -= repelY;
@@ -55,17 +54,30 @@ export class ParticleEngine {
         
         this.ctx = this.canvas.getContext('2d');
         this.particles = [];
-        this.mouse = { x: -1000, y: -1000, radius: 90 };
+        this.mouse = { x: -1000, y: -1000, radius: 95 };
         
         this.textLines = ["LIVJOT", "SINGH"];
-        this.fontFamily = "'Plus Jakarta Sans', 'Inter', sans-serif";
+        this.fontFamily = '"Plus Jakarta Sans", "Inter", system-ui, sans-serif';
         
         this.resize();
+        
+        // Window & observer resize handlers
         window.addEventListener('resize', () => this.resize());
-        
-        // Canvas relative mouse events
+
         const parent = this.canvas.parentElement || document.body;
-        
+        if (window.ResizeObserver && parent) {
+            const ro = new ResizeObserver(() => this.resize());
+            ro.observe(parent);
+        }
+
+        // Font readiness trigger
+        if (document.fonts) {
+            document.fonts.ready.then(() => {
+                setTimeout(() => this.resize(), 100);
+            });
+        }
+
+        // Canvas relative mouse events
         const updateMousePos = (e) => {
             const rect = this.canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -81,6 +93,10 @@ export class ParticleEngine {
             this.mouse.y = -1000;
         });
 
+        // Safety retries to guarantee rendering after initial load/loading screen
+        setTimeout(() => this.resize(), 300);
+        setTimeout(() => this.resize(), 1000);
+
         this.animate();
     }
 
@@ -90,26 +106,29 @@ export class ParticleEngine {
         
         // Explode particles outward dramatically on text change
         this.particles.forEach(p => {
-            p.vx = (Math.random() - 0.5) * 35;
-            p.vy = (Math.random() - 0.5) * 35;
+            p.vx = (Math.random() - 0.5) * 40;
+            p.vy = (Math.random() - 0.5) * 40;
         });
 
         setTimeout(() => {
             this.initParticles();
-        }, 150);
+        }, 120);
     }
 
     resize() {
+        if (!this.canvas) return;
         const parent = this.canvas.parentElement;
         if (parent) {
             const rect = parent.getBoundingClientRect();
-            this.width = rect.width || 500;
-            this.height = rect.height || 400;
+            this.width = Math.floor(rect.width) || 520;
+            this.height = Math.floor(rect.height) || 380;
         } else {
-            this.width = window.innerWidth * 0.45;
-            this.height = 420;
+            this.width = Math.floor(window.innerWidth * 0.45) || 520;
+            this.height = 380;
         }
         
+        if (this.width <= 0 || this.height <= 0) return;
+
         // Handle high DPI crisp canvas rendering
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         this.canvas.width = this.width * dpr;
@@ -117,11 +136,14 @@ export class ParticleEngine {
         this.canvas.style.width = `${this.width}px`;
         this.canvas.style.height = `${this.height}px`;
         
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform matrix before scaling
         this.ctx.scale(dpr, dpr);
         this.initParticles();
     }
 
     initParticles() {
+        if (!this.width || !this.height || this.width < 50 || this.height < 50) return;
+
         // Offscreen canvas for typography rasterization
         const offscreen = document.createElement('canvas');
         const oCtx = offscreen.getContext('2d', { willReadFrequently: true });
@@ -129,13 +151,14 @@ export class ParticleEngine {
         offscreen.height = this.height;
         
         // Compute responsive font size based on glass panel dimensions
-        let maxByWidth = this.width / (Math.max(...this.textLines.map(l => l.length)) * 0.75); 
-        let maxByHeight = (this.height * 0.65) / this.textLines.length;
-        let fontSize = Math.floor(Math.min(maxByWidth, maxByHeight, 82)); 
+        const maxLen = Math.max(...this.textLines.map(l => l.length));
+        let maxByWidth = this.width / (maxLen * 0.72); 
+        let maxByHeight = (this.height * 0.60) / this.textLines.length;
+        let fontSize = Math.floor(Math.min(maxByWidth, maxByHeight, 84)); 
         
         if (fontSize < 24) fontSize = 24;
 
-        oCtx.font = `800 ${fontSize}px ${this.fontFamily}`;
+        oCtx.font = `900 ${fontSize}px ${this.fontFamily}`;
         oCtx.textAlign = "center";
         oCtx.textBaseline = "middle";
         oCtx.fillStyle = "#ffffff";
@@ -160,12 +183,13 @@ export class ParticleEngine {
                 const index = (y * this.width + x) * 4;
                 const alpha = pixels[index + 3];
                 
-                if (alpha > 120) {
+                if (alpha > 40) {
                     const rand = Math.random();
                     let color = "#ffffff";
-                    if (rand > 0.75) color = "#8b5cf6";      // Violet primary
-                    else if (rand > 0.50) color = "#38bdf8"; // Cyan blue
-                    else if (rand > 0.35) color = "#c4b5fd"; // Soft lavender
+                    if (rand > 0.70) color = "#a855f7";      // Vivid Purple
+                    else if (rand > 0.45) color = "#38bdf8"; // Electric Cyan
+                    else if (rand > 0.30) color = "#c4b5fd"; // Soft Lavender
+                    else if (rand > 0.20) color = "#34d399"; // Emerald Mint
                     
                     const offsetX = (Math.random() - 0.5) * (gap * 0.6);
                     const offsetY = (Math.random() - 0.5) * (gap * 0.6);
@@ -181,9 +205,7 @@ export class ParticleEngine {
 
         // Morph existing particles or create missing ones
         if (this.particles.length > 0) {
-            const count = Math.max(this.particles.length, newTargets.length);
             const updatedParticles = [];
-            
             for (let i = 0; i < newTargets.length; i++) {
                 const target = newTargets[i];
                 if (i < this.particles.length) {
@@ -207,20 +229,20 @@ export class ParticleEngine {
         
         // 1. Draw neural constellation net lines between nearby particles
         const particleCount = this.particles.length;
-        const connectDistance = 20;
+        const connectDistance = 22;
         
         this.ctx.lineWidth = 0.5;
-        for (let i = 0; i < particleCount; i += 3) {
+        for (let i = 0; i < particleCount; i += 4) {
             const p1 = this.particles[i];
-            for (let j = i + 1; j < particleCount; j += 4) {
+            for (let j = i + 1; j < particleCount; j += 5) {
                 const p2 = this.particles[j];
                 const dx = p1.x - p2.x;
                 const dy = p1.y - p2.y;
                 const distSq = dx * dx + dy * dy;
                 
                 if (distSq < connectDistance * connectDistance) {
-                    const alpha = (1 - Math.sqrt(distSq) / connectDistance) * 0.25;
-                    this.ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                    const alpha = (1 - Math.sqrt(distSq) / connectDistance) * 0.3;
+                    this.ctx.strokeStyle = `rgba(168, 85, 247, ${alpha})`;
                     this.ctx.beginPath();
                     this.ctx.moveTo(p1.x, p1.y);
                     this.ctx.lineTo(p2.x, p2.y);
