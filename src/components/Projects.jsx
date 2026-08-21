@@ -60,15 +60,18 @@ const projectsData = [
 ];
 
 const categories = [
+  { id: 'all', label: 'All Projects' },
   { id: 'ai', label: 'AI & ML' },
   { id: 'web', label: 'Web Systems' },
   { id: 'tools', label: 'Tools' }
 ];
 
 export default function Projects() {
-  const [activeCategory, setActiveCategory] = useState('ai');
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  const filteredProjects = projectsData.filter((p) => p.category === activeCategory);
+  const filteredProjects = activeCategory === 'all'
+    ? projectsData
+    : projectsData.filter((p) => p.category === activeCategory);
 
   return (
     <section className="py-24 relative" id="projects">
