@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Cpu, Activity } from 'lucide-react';
+import { Play, Pause, RotateCcw, Cpu, Activity, Layers } from 'lucide-react';
 import { MLP, makeDataset } from '../lib/nn.js';
 
 /* Palette — data classes use the CVD-validated blue/red pair.
@@ -22,6 +22,7 @@ const BOUND_RES = 56; // decision-field grid resolution (offscreen, scaled up)
 export default function NeuralPlayground() {
   const boundaryRef = useRef(null);
   const lossRef = useRef(null);
+  const weightsRef = useRef(null);
   const fieldRef = useRef(null); // offscreen BOUND_RES×BOUND_RES field
 
   const netRef = useRef(null);
@@ -29,6 +30,8 @@ export default function NeuralPlayground() {
   const rafRef = useRef(null);
   const runningRef = useRef(false);
   const lossHistRef = useRef([]);
+  const wScaleRef = useRef(1); // running max mean|w|, so bars have a stable scale
+  const lastStatRef = useRef(0); // throttle React state updates to ~10Hz
 
   const [dataset, setDataset] = useState('spiral');
   const [running, setRunning] = useState(false);
@@ -40,6 +43,8 @@ export default function NeuralPlayground() {
     dataRef.current = makeDataset(kind, 220);
     netRef.current = new MLP([2, 8, 8, 1], lrRef.current, 0.9);
     lossHistRef.current = [];
+    wScaleRef.current = 1;
+    lastStatRef.current = 0;
     setStats({ epoch: 0, loss: 1, acc: 0 });
   }, []);
 

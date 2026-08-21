@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ExternalLink, Github, ChevronDown, AlertTriangle } from 'lucide-react';
+import { ExternalLink, ChevronDown, AlertTriangle } from 'lucide-react';
+import { Github } from '../lib/icons.jsx';
 import { Reveal } from '../lib/motion.jsx';
 
 /* ============================================================

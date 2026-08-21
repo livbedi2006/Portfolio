@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { Github, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import { Github } from '../lib/icons.jsx';
 
 const NAV = [
   { id: 'playground', label: 'playground' },

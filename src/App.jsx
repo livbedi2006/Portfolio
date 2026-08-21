@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import BentoGrid from './components/BentoGrid';
+import Playground from './components/Playground';
 import Projects from './components/Projects';
-import Services from './components/Services';
-import ContactModal from './components/ContactModal';
+import About from './components/About';
+import Build from './components/Build';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 export default function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-[#090a0f] text-slate-100 font-sans selection:bg-purple-500 selection:text-white relative">
-      <Navbar onOpenModal={() => setIsModalOpen(true)} />
+    <div className="min-h-screen bg-ink-900 text-paper grain">
+      <a href="#main" className="skip-link">Skip to content</a>
 
-      <main>
-        <Hero onOpenModal={() => setIsModalOpen(true)} />
-        <BentoGrid />
+      <Navbar />
+
+      <main id="main">
+        <Hero />
+        <Playground />
         <Projects />
-        <Services onOpenModal={() => setIsModalOpen(true)} />
+        <About />
+        <Build />
+        <Contact />
       </main>
 
       <Footer />
-
-      <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }
