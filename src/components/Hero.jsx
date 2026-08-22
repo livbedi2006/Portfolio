@@ -108,14 +108,14 @@ export default function Hero() {
             >
               <a
                 href="#playground"
-                className="group px-5 py-3 rounded-xl bg-paper text-ink-900 font-mono text-sm font-semibold hover:bg-white transition-colors flex items-center gap-2"
+                className="group px-5 py-3 rounded-xl bg-paper text-ink-900 font-mono text-sm font-semibold hover:opacity-90 transition-colors flex items-center gap-2"
               >
                 <span>run the network</span>
                 <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" aria-hidden="true" />
               </a>
               <a
                 href="mailto:livjotseerat@gmail.com"
-                className="px-5 py-3 rounded-xl bg-white/[0.04] border border-line text-paper font-mono text-sm hover:bg-white/[0.08] transition-colors flex items-center gap-2"
+                className="px-5 py-3 rounded-xl bg-raise-1 border border-line text-paper font-mono text-sm hover:bg-raise-3 transition-colors flex items-center gap-2"
               >
                 <Mail className="w-4 h-4" aria-hidden="true" />
                 <span>email me</span>
@@ -124,7 +124,7 @@ export default function Hero() {
                 <a
                   href="https://github.com/livbedi2006"
                   target="_blank" rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-white/[0.04] border border-line text-paper-dim hover:text-paper transition-colors"
+                  className="p-3 rounded-xl bg-raise-1 border border-line text-paper-dim hover:text-paper transition-colors"
                   aria-label="GitHub profile"
                 >
                   <Github className="w-4 h-4" aria-hidden="true" />
@@ -132,7 +132,7 @@ export default function Hero() {
                 <a
                   href="https://www.linkedin.com/in/livjot-singh-7909a0334/"
                   target="_blank" rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-white/[0.04] border border-line text-paper-dim hover:text-paper transition-colors"
+                  className="p-3 rounded-xl bg-raise-1 border border-line text-paper-dim hover:text-paper transition-colors"
                   aria-label="LinkedIn profile"
                 >
                   <Linkedin className="w-4 h-4" aria-hidden="true" />
@@ -146,13 +146,13 @@ export default function Hero() {
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 26, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-2xl border border-line bg-ink-800/80 backdrop-blur-xl overflow-hidden shadow-2xl shadow-black/50"
+            className="rounded-2xl border border-line bg-ink-800/80 backdrop-blur-xl overflow-hidden shadow-panel"
           >
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-white/[0.02]">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-raise-1">
               <span className="flex gap-1.5" aria-hidden="true">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#e66767]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#fab219]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0ca30c]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-danger" />
+                <span className="w-2.5 h-2.5 rounded-full bg-warn" />
+                <span className="w-2.5 h-2.5 rounded-full bg-ok" />
               </span>
               <span className="font-mono text-xs text-paper-mut ml-2">~/livjot — zsh</span>
             </div>

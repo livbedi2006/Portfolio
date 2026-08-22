@@ -74,7 +74,7 @@ export default function Contact() {
                 </div>
                 <button
                   onClick={copyEmail}
-                  className="shrink-0 p-2 rounded-lg bg-white/[0.04] border border-line text-paper-dim hover:text-paper transition-colors"
+                  className="shrink-0 p-2 rounded-lg bg-raise-1 border border-line text-paper-dim hover:text-paper transition-colors"
                   aria-label={copied ? 'Email address copied' : 'Copy email address'}
                 >
                   {copied ? (
@@ -94,7 +94,7 @@ export default function Contact() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-3 p-4 rounded-xl border border-line bg-ink-800/60 hover:border-line-hard hover:bg-white/[0.04] transition-colors group"
+                  className="flex items-center justify-between gap-3 p-4 rounded-xl border border-line bg-ink-800/60 hover:border-line-hard hover:bg-raise-2 transition-colors group"
                 >
                   <span className="flex items-center gap-3 min-w-0">
                     <Icon className="w-4 h-4 text-accent-lt shrink-0" aria-hidden="true" />
@@ -115,11 +115,11 @@ export default function Contact() {
               }}
               className="rounded-2xl border border-line bg-ink-800/70 backdrop-blur-xl overflow-hidden"
             >
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-white/[0.02]">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-raise-1">
                 <span className="flex gap-1.5" aria-hidden="true">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#e66767]" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#fab219]" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0ca30c]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-danger" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-warn" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-ok" />
                 </span>
                 <span className="font-mono text-xs text-paper-mut ml-2">new_enquiry.txt</span>
               </div>
@@ -136,8 +136,8 @@ export default function Contact() {
                         aria-pressed={kind === k.id}
                         className={`px-3 py-1.5 rounded-lg font-mono text-[11.5px] border transition-colors ${
                           kind === k.id
-                            ? 'bg-accent border-accent text-white'
-                            : 'bg-white/[0.03] border-line text-paper-dim hover:text-paper'
+                            ? 'bg-accent border-accent text-on-accent'
+                            : 'bg-raise-1 border-line text-paper-dim hover:text-paper'
                         }`}
                       >
                         {k.label}
@@ -185,7 +185,7 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-lg bg-paper text-ink-900 font-mono text-[13px] font-semibold hover:bg-white transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-lg bg-paper text-ink-900 font-mono text-[13px] font-semibold hover:opacity-90 transition-colors flex items-center justify-center gap-2"
                 >
                   <Mail className="w-4 h-4" aria-hidden="true" />
                   <span>open this in my email app</span>

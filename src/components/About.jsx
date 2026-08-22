@@ -30,6 +30,13 @@ const NOT_YET = [
   'Published research or contributed to a major open-source ML library.',
 ];
 
+/* The tier dot is an ORDINAL cue, so it gets a sequential encoding: one hue,
+   three steps of the same accent. Deliberately not green/amber/grey — those
+   are the status colours, and painting "learning now" amber would say
+   "warning" about something that is just honest. The dot is aria-hidden and
+   the tier is written in text beside it, so it carries no information alone. */
+const TIER_DOT = ['bg-accent-lt', 'bg-accent-lt/55', 'bg-accent-lt/25'];
+
 export default function About() {
   return (
     <section id="about" className="py-24 relative">
@@ -53,8 +60,7 @@ export default function About() {
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-1">
                     <span
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: i === 0 ? '#0ca30c' : i === 1 ? '#fab219' : '#8a8a93' }}
+                      className={`w-1.5 h-1.5 rounded-full ${TIER_DOT[i]}`}
                       aria-hidden="true"
                     />
                     <span className="mono-label text-[10px]">{t.tier}</span>
@@ -64,7 +70,7 @@ export default function About() {
                     {t.items.map((item) => (
                       <li
                         key={item}
-                        className="font-mono text-[12px] px-2.5 py-1 rounded-lg bg-white/[0.04] border border-line text-paper-dim"
+                        className="font-mono text-[12px] px-2.5 py-1 rounded-lg bg-raise-1 border border-line text-paper-dim"
                       >
                         {item}
                       </li>

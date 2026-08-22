@@ -52,7 +52,7 @@ export default function Playground() {
               p: 'A toy. Two input features, 220 points, full-batch gradient descent, no train/test split — so the accuracy shown is training accuracy and would be dishonest to quote as a result.',
             },
           ].map((c) => (
-            <div key={c.h} className="rounded-xl border border-line bg-white/[0.02] p-4">
+            <div key={c.h} className="rounded-xl border border-line bg-raise-1 p-4">
               <span className="mono-label text-[10px]">{c.h}</span>
               <p className="text-paper-mut text-[12.5px] leading-relaxed mt-2">{c.p}</p>
             </div>

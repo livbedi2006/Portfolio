@@ -29,7 +29,7 @@ export default function Footer() {
                 key={href}
                 href={href}
                 {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                className="p-2.5 rounded-lg bg-white/[0.04] border border-line text-paper-dim hover:text-paper hover:bg-white/10 transition-colors"
+                className="p-2.5 rounded-lg bg-raise-1 border border-line text-paper-dim hover:text-paper hover:bg-raise-3 transition-colors"
                 aria-label={label}
               >
                 <Icon className="w-4 h-4" aria-hidden="true" />
@@ -37,7 +37,7 @@ export default function Footer() {
             ))}
             <a
               href="#top"
-              className="p-2.5 rounded-lg bg-white/[0.04] border border-line text-paper-dim hover:text-paper hover:bg-white/10 transition-colors"
+              className="p-2.5 rounded-lg bg-raise-1 border border-line text-paper-dim hover:text-paper hover:bg-raise-3 transition-colors"
               aria-label="Back to top"
             >
               <ArrowUp className="w-4 h-4" aria-hidden="true" />

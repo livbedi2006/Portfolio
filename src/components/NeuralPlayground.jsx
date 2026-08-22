@@ -2,13 +2,66 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Play, Pause, RotateCcw, Cpu, Layers } from 'lucide-react';
 import { MLP, makeDataset } from '../lib/nn.js';
 
-/* Palette — data classes use the CVD-validated blue/red pair.
-   Violet is UI chrome only; it never encodes a class. */
-const C = {
-  classA: '#3987e5',
+/* ============================================================
+   CANVAS COLOUR — read from the stylesheet, not hardcoded.
+
+   A canvas can't use a CSS class, so these three charts used to carry
+   their own hexes. That made them the one part of the page that
+   couldn't follow the ABYSS↔AQUA theme flip. They now read the same
+   custom properties every other component reads, and repaint when the
+   theme changes.
+
+   Deliberately reading the RAW theme vars (--d-a, --ln, …) rather than
+   the Tailwind --color-* aliases: the raw ones are plain literals in
+   each theme block, with no var() indirection to resolve.
+
+   Encoding choices, unchanged by the palette swap:
+   · boundary + points = DIVERGING (class 0 ↔ uncertain ↔ class 1), so
+     two opposing hues with the surface showing through at the midpoint.
+     Validated CVD-safe: dark #0fa4b4/#e66767, light #0fa4b4/#c0463f.
+   · weight bars = SEQUENTIAL (magnitude), so one hue, height + alpha.
+     Never a class colour — those stay reserved for the data.
+   ============================================================ */
+const FALLBACK = {
+  classA: '#0fa4b4',
   classB: '#e66767',
-  accent: '#a78bfa',
+  series: '#45a9a9',
+  label: '#8399a0',
+  line: 'rgba(169,216,216,0.12)',
+  lineSoft: 'rgba(169,216,216,0.07)',
+  track: 'rgba(169,216,216,0.10)',
+  surface: '#131a2a',
 };
+
+const VARS = {
+  classA: '--d-a',
+  classB: '--d-b',
+  series: '--a-text',
+  label: '--t-muted',
+  line: '--ln',
+  lineSoft: '--ln-soft',
+  track: '--bar-track',
+  surface: '--s-page',
+};
+
+function readTheme() {
+  if (typeof window === 'undefined') return FALLBACK;
+  const cs = getComputedStyle(document.documentElement);
+  const out = {};
+  for (const [key, name] of Object.entries(VARS)) {
+    out[key] = cs.getPropertyValue(name).trim() || FALLBACK[key];
+  }
+  return out;
+}
+
+/* #rgb / #rrggbb → [r,g,b]. Needed because alpha ramps have to be built
+   per-frame, and canvas has no colour-mix(). */
+function toRgb(hex) {
+  let h = String(hex).replace('#', '');
+  if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+  const n = parseInt(h, 16);
+  return Number.isNaN(n) ? [69, 169, 169] : [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
 
 const DATASETS = [
   { id: 'spiral', label: 'spiral' },
@@ -36,6 +89,8 @@ export default function NeuralPlayground() {
   const lastStatRef = useRef(0); // throttle React state updates to ~10Hz
   const epochRef = useRef(0); // true epoch count (setStats is throttled, so it can't derive this)
   const dprRef = useRef(1); // cached so the rAF loop never forces a layout read
+  const colRef = useRef(FALLBACK); // live theme colours; refreshed on theme flip
+  const rgbRef = useRef({ a: toRgb(FALLBACK.classA), b: toRgb(FALLBACK.classB), s: toRgb(FALLBACK.series) });
 
   const [dataset, setDataset] = useState('spiral');
   const [running, setRunning] = useState(false);
@@ -74,16 +129,18 @@ export default function NeuralPlayground() {
     const octx = off.getContext('2d');
     const img = octx.createImageData(BOUND_RES, BOUND_RES);
     const d = img.data;
+    const [ar, ag, ab] = rgbRef.current.a;
+    const [br, bg, bb] = rgbRef.current.b;
     for (let gy = 0; gy < BOUND_RES; gy++) {
       const ny = 1 - (gy / (BOUND_RES - 1)) * 2;
       for (let gx = 0; gx < BOUND_RES; gx++) {
         const nx = (gx / (BOUND_RES - 1)) * 2 - 1;
-        const p = net.predict([nx, ny]); // 0..1  (→1 class A/blue, →0 class B/red)
+        const p = net.predict([nx, ny]); // 0..1  (→1 class A, →0 class B)
         const conf = Math.abs(p - 0.5) * 2;
         const a = Math.round((0.10 + conf * 0.44) * 255);
         const i = (gy * BOUND_RES + gx) * 4;
-        if (p >= 0.5) { d[i] = 57; d[i + 1] = 135; d[i + 2] = 229; }
-        else { d[i] = 230; d[i + 1] = 103; d[i + 2] = 103; }
+        if (p >= 0.5) { d[i] = ar; d[i + 1] = ag; d[i + 2] = ab; }
+        else { d[i] = br; d[i + 1] = bg; d[i + 2] = bb; }
         d[i + 3] = a;
       }
     }
@@ -94,7 +151,7 @@ export default function NeuralPlayground() {
     ctx.drawImage(off, 0, 0, W, H);
 
     // Grid
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.strokeStyle = colRef.current.lineSoft;
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
       const t = Math.round((i / 4) * W) + 0.5;
@@ -103,17 +160,18 @@ export default function NeuralPlayground() {
       ctx.beginPath(); ctx.moveTo(0, s); ctx.lineTo(W, s); ctx.stroke();
     }
 
-    // Data points
+    // Data points. The ring is the SURFACE colour, not black — that's what
+    // keeps overlapping points readable, and it has to invert with the theme.
     const r = Math.max(3, W / 110);
     for (const { x, y } of dataRef.current) {
       const px = ((x[0] + 1) / 2) * W;
       const py = ((1 - x[1]) / 2) * H;
       ctx.beginPath();
       ctx.arc(px, py, r, 0, Math.PI * 2);
-      ctx.fillStyle = y === 1 ? C.classA : C.classB;
+      ctx.fillStyle = y === 1 ? colRef.current.classA : colRef.current.classB;
       ctx.fill();
       ctx.lineWidth = 1.4;
-      ctx.strokeStyle = 'rgba(8,8,10,0.9)';
+      ctx.strokeStyle = colRef.current.surface;
       ctx.stroke();
     }
   }, []);
@@ -127,7 +185,8 @@ export default function NeuralPlayground() {
     if (!W || !H) return;
     ctx.clearRect(0, 0, W, H);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    const col = colRef.current;
+    ctx.strokeStyle = col.line;
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, H - 1); ctx.lineTo(W, H - 1); ctx.stroke();
 
@@ -140,37 +199,39 @@ export default function NeuralPlayground() {
     const pad = Math.round(5 * dpr);
     const px = (i) => (i / (hist.length - 1)) * (W - pad * 2) + pad;
     const py = (l) => H - pad - (l / maxL) * (H - pad * 2);
+    const [sr, sg, sb] = rgbRef.current.s;
 
     ctx.beginPath();
     ctx.moveTo(px(0), H);
     hist.forEach((l, i) => ctx.lineTo(px(i), py(l)));
     ctx.lineTo(px(hist.length - 1), H);
     ctx.closePath();
-    ctx.fillStyle = 'rgba(167,139,250,0.12)';
+    ctx.fillStyle = `rgba(${sr},${sg},${sb},0.14)`;
     ctx.fill();
 
     ctx.beginPath();
     hist.forEach((l, i) => (i === 0 ? ctx.moveTo(px(i), py(l)) : ctx.lineTo(px(i), py(l))));
-    ctx.strokeStyle = C.accent;
+    ctx.strokeStyle = col.series;
     ctx.lineWidth = Math.max(1, 2 * dpr);
     ctx.lineJoin = 'round';
     ctx.stroke();
 
     ctx.beginPath();
     ctx.arc(px(hist.length - 1), py(hist[hist.length - 1]), Math.max(2, 3 * dpr), 0, Math.PI * 2);
-    ctx.fillStyle = C.accent;
+    ctx.fillStyle = col.series;
     ctx.fill();
 
     // A sparkline with no y reference isn't readable — state the peak.
     ctx.font = `${Math.round(8 * dpr)}px ui-monospace, monospace`;
-    ctx.fillStyle = 'rgba(138,138,147,1)';
+    ctx.fillStyle = col.label;
     ctx.textBaseline = 'top';
     ctx.fillText(maxL.toFixed(2), pad, pad - 2 * dpr);
   }, []);
 
   /* Per-neuron mean |weight|, one bar per neuron, grouped by layer.
      Magnitude is a sequential encoding: single hue, bar height + alpha.
-     Bars are never a class colour — blue/red stay reserved for the data. */
+     Bars are never a class colour — the diverging pair stays reserved
+     for the data. */
   const drawWeights = useCallback(() => {
     const canvas = weightsRef.current;
     const net = netRef.current;
@@ -211,16 +272,18 @@ export default function NeuralPlayground() {
     ctx.textBaseline = 'top';
     ctx.font = `${Math.round(8 * dpr)}px ui-monospace, monospace`;
     const groupStart = [0];
+    const col = colRef.current;
+    const [sr, sg, sb] = rgbRef.current.s;
 
     mags.forEach((d, i) => {
       if (d.l !== prevLayer) { x += groupGap - gap; groupStart.push(x); prevLayer = d.l; }
       const t = Math.min(1, d.m / scale);
       const h = Math.max(1 * dpr, t * (base - 2 * dpr));
       // baseline track
-      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.fillStyle = col.track;
       ctx.fillRect(x, 2 * dpr, barW, base - 2 * dpr);
       // magnitude bar, anchored to the baseline, rounded top end
-      ctx.fillStyle = `rgba(167,139,250,${(0.35 + t * 0.6).toFixed(3)})`;
+      ctx.fillStyle = `rgba(${sr},${sg},${sb},${(0.35 + t * 0.6).toFixed(3)})`;
       const r = Math.min(barW / 2, 2 * dpr);
       const y = base - h;
       if (ctx.roundRect) {
@@ -234,14 +297,14 @@ export default function NeuralPlayground() {
     });
 
     // Layer labels + baseline
-    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.strokeStyle = col.line;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, base + 0.5);
     ctx.lineTo(W, base + 0.5);
     ctx.stroke();
 
-    ctx.fillStyle = 'rgba(138,138,147,1)';
+    ctx.fillStyle = col.label;
     LAYER_LABELS.forEach((lab, i) => {
       if (groupStart[i] === undefined) return;
       ctx.fillText(lab, groupStart[i], base + 3 * dpr);
@@ -334,8 +397,16 @@ export default function NeuralPlayground() {
     return true;
   }, []);
 
+  // Pull the current theme's colours into the refs the renderers read.
+  const refreshTheme = useCallback(() => {
+    const col = readTheme();
+    colRef.current = col;
+    rgbRef.current = { a: toRgb(col.classA), b: toRgb(col.classB), s: toRgb(col.series) };
+  }, []);
+
   useEffect(() => {
     rebuild(dataset);
+    refreshTheme();
 
     const canvases = [boundaryRef.current, lossRef.current, weightsRef.current];
     const redraw = () => { drawBoundary(); drawLoss(); drawWeights(); };
@@ -361,12 +432,27 @@ export default function NeuralPlayground() {
     };
     dprQuery.addEventListener('change', onDpr);
 
+    // Theme flip → re-read the tokens and repaint. Two triggers, because
+    // there are two ways the palette can change: the toggle sets data-theme
+    // on <html>, and a visitor who has never used the toggle is still
+    // following the OS, where nothing in the DOM changes at all.
+    const onTheme = () => {
+      refreshTheme();
+      redraw();
+    };
+    const mo = new MutationObserver(onTheme);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    const osQuery = window.matchMedia('(prefers-color-scheme: light)');
+    osQuery.addEventListener('change', onTheme);
+
     for (const cv of canvases) sizeCanvas(cv);
     redraw();
 
     return () => {
       ro.disconnect();
+      mo.disconnect();
       dprQuery.removeEventListener('change', onDpr);
+      osQuery.removeEventListener('change', onTheme);
       runningRef.current = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
@@ -376,14 +462,14 @@ export default function NeuralPlayground() {
   useEffect(() => { lrRef.current = lr; }, [lr]);
 
   return (
-    <div className="rounded-2xl border border-line bg-ink-800/80 backdrop-blur-xl overflow-hidden shadow-2xl shadow-black/50">
+    <div className="rounded-2xl border border-line bg-ink-800/80 backdrop-blur-xl overflow-hidden shadow-panel">
       {/* Terminal header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-line bg-white/[0.02]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-line bg-raise-1">
         <div className="flex items-center gap-2">
           <span className="flex gap-1.5" aria-hidden="true">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#e66767]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#fab219]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#0ca30c]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-danger" />
+            <span className="w-2.5 h-2.5 rounded-full bg-warn" />
+            <span className="w-2.5 h-2.5 rounded-full bg-ok" />
           </span>
           <span className="font-mono text-xs text-paper-mut ml-2">mlp_playground.js</span>
         </div>
@@ -398,14 +484,14 @@ export default function NeuralPlayground() {
         <div className="p-4 border-b lg:border-b-0 lg:border-r border-line">
           <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
             <span className="mono-label">decision boundary</span>
-            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-lg border border-line" role="group" aria-label="Dataset">
+            <div className="flex items-center gap-1 bg-ink-850/60 p-1 rounded-lg border border-line" role="group" aria-label="Dataset">
               {DATASETS.map((dset) => (
                 <button
                   key={dset.id}
                   onClick={() => switchDataset(dset.id)}
                   aria-pressed={dataset === dset.id}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors ${
-                    dataset === dset.id ? 'bg-accent text-white' : 'text-paper-mut hover:text-paper'
+                    dataset === dset.id ? 'bg-accent text-on-accent' : 'text-paper-mut hover:text-paper'
                   }`}
                 >
                   {dset.label}
@@ -417,10 +503,10 @@ export default function NeuralPlayground() {
             <canvas ref={boundaryRef} className="w-full h-full block" aria-label="Neural network decision boundary, updating live during training" role="img" />
             <div className="absolute bottom-2 left-2 flex gap-3 font-mono text-[10px]">
               <span className="flex items-center gap-1.5 text-paper-dim">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: C.classA }} aria-hidden="true" /> class 1
+                <span className="w-2.5 h-2.5 rounded-full bg-class-a" aria-hidden="true" /> class 1
               </span>
               <span className="flex items-center gap-1.5 text-paper-dim">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: C.classB }} aria-hidden="true" /> class 0
+                <span className="w-2.5 h-2.5 rounded-full bg-class-b" aria-hidden="true" /> class 0
               </span>
             </div>
           </div>
@@ -456,21 +542,21 @@ export default function NeuralPlayground() {
               type="range" min="0.005" max="0.15" step="0.005"
               value={lr}
               onChange={(e) => setLr(parseFloat(e.target.value))}
-              className="w-full accent-[#8b5cf6] cursor-pointer"
+              className="w-full accent-accent cursor-pointer"
             />
           </div>
 
           <div className="flex gap-2 mt-auto">
             <button
               onClick={toggleRun}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent hover:bg-accent-lt text-white font-mono text-xs font-semibold transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent hover:bg-accent-lt text-on-accent font-mono text-xs font-semibold transition-colors"
             >
               {running ? <Pause className="w-3.5 h-3.5" aria-hidden="true" /> : <Play className="w-3.5 h-3.5" aria-hidden="true" />}
               {running ? 'pause' : 'train'}
             </button>
             <button
               onClick={reset}
-              className="px-3 py-2.5 rounded-lg bg-white/[0.05] border border-line text-paper-dim hover:text-paper hover:bg-white/10 transition-colors"
+              className="px-3 py-2.5 rounded-lg bg-raise-2 border border-line text-paper-dim hover:text-paper hover:bg-raise-3 transition-colors"
               aria-label="Reset network to fresh random weights"
             >
               <RotateCcw className="w-4 h-4" aria-hidden="true" />

@@ -107,7 +107,7 @@ export default function Projects() {
         </Reveal>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-8 p-1 rounded-xl border border-line bg-white/[0.02] w-fit" role="group" aria-label="Filter projects">
+        <div className="flex flex-wrap items-center gap-1.5 mb-8 p-1 rounded-xl border border-line bg-raise-1 w-fit" role="group" aria-label="Filter projects">
           {FILTERS.map((f) => {
             const isActive = filter === f.id;
             return (
@@ -124,7 +124,7 @@ export default function Projects() {
                     transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                   />
                 )}
-                <span className={`relative z-10 ${isActive ? 'text-white font-semibold' : ''}`}>
+                <span className={`relative z-10 ${isActive ? 'text-on-accent font-semibold' : ''}`}>
                   {f.label}
                 </span>
               </button>
@@ -156,7 +156,7 @@ export default function Projects() {
                           </span>
                           <span className="font-mono text-[10px] text-paper-mut">{p.lang}</span>
                           {p.flag && (
-                            <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-[#fab219]/30 bg-[#fab219]/10 text-[#fab219] flex items-center gap-1">
+                            <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-warn/30 bg-warn/10 text-warn flex items-center gap-1">
                               <AlertTriangle className="w-2.5 h-2.5" aria-hidden="true" />
                               ethics note
                             </span>
@@ -168,7 +168,7 @@ export default function Projects() {
                         href={GH + p.repo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 p-2 rounded-lg bg-white/[0.04] border border-line text-paper-dim hover:text-paper hover:bg-white/10 transition-colors"
+                        className="shrink-0 p-2 rounded-lg bg-raise-1 border border-line text-paper-dim hover:text-paper hover:bg-raise-3 transition-colors"
                         aria-label={`View ${p.title} source on GitHub`}
                       >
                         <Github className="w-4 h-4" aria-hidden="true" />
@@ -190,7 +190,7 @@ export default function Projects() {
                         className="w-full flex items-center justify-between font-mono text-[11px] text-paper-dim hover:text-paper transition-colors"
                       >
                         <span className="flex items-center gap-1.5">
-                          <span className="text-[#fab219]">!</span> limits &amp; what I'd fix
+                          <span className="text-warn">!</span> limits &amp; what I'd fix
                         </span>
                         <ChevronDown
                           className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -225,7 +225,7 @@ export default function Projects() {
             href="https://github.com/livbedi2006?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] border border-line text-paper font-mono text-xs hover:bg-white/[0.08] transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-raise-1 border border-line text-paper font-mono text-xs hover:bg-raise-3 transition-colors"
           >
             <Github className="w-4 h-4" aria-hidden="true" />
             <span>all repositories</span>

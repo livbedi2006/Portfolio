@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { Github } from '../lib/icons.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 
 const NAV = [
   { id: 'playground', label: 'playground' },
@@ -70,7 +71,7 @@ export default function Navbar() {
           </a>
 
           {/* Nav */}
-          <nav className="hidden md:flex items-center gap-1 bg-white/[0.03] p-1 rounded-full border border-line" aria-label="Primary">
+          <nav className="hidden md:flex items-center gap-1 bg-raise-1 p-1 rounded-full border border-line" aria-label="Primary">
             {NAV.map((link) => {
               const isActive = active === link.id;
               return (
@@ -83,7 +84,7 @@ export default function Navbar() {
                   {isActive && (
                     <motion.span
                       layoutId="navPill"
-                      className="absolute inset-0 bg-white/[0.06] rounded-full border border-line"
+                      className="absolute inset-0 bg-raise-2 rounded-full border border-line"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -95,18 +96,19 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2.5">
+            <ThemeToggle />
             <a
               href="https://github.com/livbedi2006"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 rounded-full bg-white/[0.04] border border-line text-paper-dim hover:text-paper hover:bg-white/10 transition-colors"
+              className="p-2.5 rounded-full bg-raise-1 border border-line text-paper-dim hover:text-paper hover:bg-raise-3 transition-colors"
               aria-label="GitHub profile"
             >
               <Github className="w-4 h-4" aria-hidden="true" />
             </a>
             <a
               href="#contact"
-              className="group px-4 py-2 rounded-full bg-paper text-ink-900 font-mono font-semibold text-xs hover:bg-white transition-colors flex items-center gap-1.5"
+              className="group px-4 py-2 rounded-full bg-paper text-ink-900 font-mono font-semibold text-xs hover:opacity-90 transition-colors flex items-center gap-1.5"
             >
               <span>get in touch</span>
               <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />

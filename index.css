@@ -119,6 +119,16 @@
   --bar-track: rgba(169, 216, 216, 0.10);
   --sb-thumb:  #24405c;
   --sb-hover:  #2e5170;
+  --panel-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.55);
+
+  /* Backdrop ramp — the marbled shader's four stops. Solved, not chosen:
+     these clear primary 11.0 / secondary 6.8 / muted 4.5 at FULL opacity,
+     worst case over every stop, so --bd-opacity below is aesthetic only. */
+  --bd-0: #131a2a;  /* ABYSS — same as the page, so the field never lightens it */
+  --bd-1: #16202f;
+  --bd-2: #16243a;  /* ATLANTIC */
+  --bd-3: #12304a;  /* PETROL — the ceiling; brighter stops break muted text */
+  --bd-opacity: 1;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -177,9 +187,18 @@
   --bar-track: rgba(19, 26, 42, 0.10);
   --sb-thumb:  #7bb8b8;
   --sb-hover:  #5da3a3;
-}
+  --panel-shadow: 0 18px 40px -14px rgba(19, 26, 42, 0.22);
 
-/* Follow the OS when the visitor has not chosen explicitly.
+  /* Light runs the ramp the other way: near-white → Aqua. Note the page
+     colour is the DARKEST stop here, not the lightest — the field can only
+     lighten the page, never darken it, which is what protects dark text.
+     Clears primary 11.2 / secondary 8.7 / muted 5.2 at full opacity. */
+  --bd-0: #f2fafa;
+  --bd-1: #dcf0f0;
+  --bd-2: #c1e5e5;
+  --bd-3: #a9d8d8;  /* AQUA — the page colour, the floor of the ramp */
+  --bd-opacity: 1;
+}
    Same declarations as [data-theme="light"] — kept in sync by hand
    because a CSS-only @media block cannot reuse a selector's body. */
 @media (prefers-color-scheme: light) {
@@ -225,6 +244,7 @@
     --bar-track: rgba(19, 26, 42, 0.10);
     --sb-thumb:  #7bb8b8;
     --sb-hover:  #5da3a3;
+    --panel-shadow: 0 18px 40px -14px rgba(19, 26, 42, 0.22);
   }
 }
 
@@ -340,6 +360,10 @@ body::after {
   );
 }
 .spotlight:hover::before { opacity: 1; }
+
+/* Panel elevation — a black drop shadow reads as grime on a light
+   surface, so the shadow colour is a theme token too. */
+.shadow-panel { box-shadow: var(--panel-shadow); }
 
 /* Mono eyebrow / section index */
 .mono-label {

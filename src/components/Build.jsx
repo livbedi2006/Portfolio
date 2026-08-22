@@ -61,7 +61,7 @@ export default function Build() {
               <Reveal key={o.title} delay={i * 0.08}>
                 <SpotlightCard className="h-full rounded-2xl border border-line bg-ink-800/60 backdrop-blur-sm p-6 hover:border-line-hard transition-colors">
                   <div className="relative z-10 flex flex-col h-full">
-                    <div className="w-10 h-10 rounded-xl border border-line bg-white/[0.04] flex items-center justify-center text-accent-lt mb-4">
+                    <div className="w-10 h-10 rounded-xl border border-line bg-raise-1 flex items-center justify-center text-accent-lt mb-4">
                       <Icon className="w-5 h-5" aria-hidden="true" />
                     </div>
                     <h3 className="text-base font-bold text-paper mb-2.5 leading-snug">{o.title}</h3>
@@ -102,7 +102,7 @@ export default function Build() {
               <ul className="mt-4 space-y-3">
                 {TURN_DOWN.map((t) => (
                   <li key={t} className="flex gap-2.5 text-[13px] text-paper-dim leading-relaxed">
-                    <span className="text-[#e66767] font-mono shrink-0 mt-0.5" aria-hidden="true">×</span>
+                    <span className="text-danger font-mono shrink-0 mt-0.5" aria-hidden="true">×</span>
                     <span>{t}</span>
                   </li>
                 ))}
