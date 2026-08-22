@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ExternalLink, ChevronDown, AlertTriangle } from 'lucide-react';
 import { Github } from '../lib/icons.jsx';
 import { Reveal } from '../lib/motion.jsx';
@@ -75,8 +75,8 @@ const PROJECTS = [
 ];
 
 const FILTERS = [
-  { id: 'cv', label: 'vision' },
   { id: 'nlp', label: 'nlp' },
+  { id: 'cv', label: 'vision' },
   { id: 'ml', label: 'ml' },
   { id: 'web', label: 'web' },
   { id: 'all', label: 'all' },
@@ -85,7 +85,7 @@ const FILTERS = [
 const GH = 'https://github.com/livbedi2006/';
 
 export default function Projects() {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('nlp');
   const [open, setOpen] = useState(null);
   const reduce = useReducedMotion();
 

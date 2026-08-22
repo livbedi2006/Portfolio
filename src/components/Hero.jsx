@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'motion/react';
 import { ArrowDown, Mail } from 'lucide-react';
 import { Github, Linkedin } from '../lib/icons.jsx';
 import { Marquee } from '../lib/motion.jsx';

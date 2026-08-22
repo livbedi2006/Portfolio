@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { MotionConfig } from 'framer-motion';
+import { MotionConfig } from 'motion/react';
 import App from './App.jsx';
 import '../index.css';
 

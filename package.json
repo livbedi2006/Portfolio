@@ -22,9 +22,10 @@
   },
   "homepage": "https://github.com/livbedi2006/Portfolio#readme",
   "dependencies": {
+    "@paper-design/shaders": "^0.0.80",
     "framer-motion": "^13.1.1",
     "lucide-react": "^1.33.0",
-    "motion": "^13.0.0",
+    "motion": "^13.1.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "three": "^0.185.1",

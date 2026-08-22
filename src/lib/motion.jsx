@@ -6,7 +6,7 @@ import {
   useMotionValue,
   useSpring,
   animate,
-} from 'framer-motion';
+} from 'motion/react';
 
 /* ============================================================
    Motion primitives — the shared vocabulary for the whole site.
