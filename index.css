@@ -1,42 +1,66 @@
 /*
    LIVJOT SINGH BEDI — AI/ML ENGINEER PORTFOLIO
    Research-lab terminal aesthetic. Tailwind v4 (CSS-first).
+
+   COLOR SYSTEM — teal palette, two modes.
+     dark  base = ABYSS #131a2a
+     light base = AQUA  #a9d8d8
+
+   Every value here was checked with a WCAG contrast script and, for the
+   two data-class colors, with the dataviz CVD validator. Numbers are in
+   the comments so the next person can re-check instead of trusting me.
+
+   Token names are SEMANTIC, not literal:
+     ink-*   = surfaces, darkest→lightest *in reading order for that mode*
+     paper-* = text tiers
+   So `bg-ink-800 text-paper-dim` means "card surface, secondary text" in
+   BOTH modes, and every existing utility keeps working when tokens flip.
    ============================================================ */
 
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   §1  THEME TOKENS  (Tailwind v4 @theme → utilities + CSS vars)
+   §1  THEME  (Tailwind v4 @theme inline → utilities read the
+       indirection vars below, so they re-resolve on theme flip)
    ───────────────────────────────────────────────────────────── */
-@theme {
+@theme inline {
   /* Surfaces */
-  --color-ink-900: #08080a;   /* page plane        */
-  --color-ink-850: #0a0a0d;
-  --color-ink-800: #0d0d10;   /* panel / card      */
-  --color-ink-750: #121216;   /* raised panel      */
-  --color-ink-700: #17171c;   /* hover surface     */
+  --color-ink-900: var(--s-page);
+  --color-ink-850: var(--s-sunk);
+  --color-ink-800: var(--s-card);
+  --color-ink-750: var(--s-raised);
+  --color-ink-700: var(--s-top);
 
-  /* Text ink (all validated ≥4.5:1 on ink-900/800, except muted=large) */
-  --color-paper:      #f2f2f3; /* primary text      */
-  --color-paper-dim:  #a1a1aa; /* secondary text    */
-  --color-paper-mut:  #8a8a93; /* muted (small ok)  */
-  --color-paper-faint:#44444c; /* decorative only   */
+  /* Text ink */
+  --color-paper:       var(--t-primary);
+  --color-paper-dim:   var(--t-secondary);
+  --color-paper-mut:   var(--t-muted);
+  --color-paper-faint: var(--t-faint);
 
-  /* Accent — violet is UI chrome ONLY, never a data-class color */
-  --color-accent:     #8b5cf6;
-  --color-accent-lt:  #a78bfa;
-  --color-accent-dim: #6d28d9;
+  /* Accent — teal is UI chrome; it is NOT a data-class color */
+  --color-accent:     var(--a-base);
+  --color-accent-lt:  var(--a-text);
+  --color-accent-dim: var(--a-deep);
+  --color-on-accent:  var(--a-on);
 
-  /* Data-class colors (validated CVD-safe pair on dark surface) */
-  --color-class-a: #3987e5;   /* blue  */
-  --color-class-b: #e66767;   /* red   */
-  --color-ok:      #0ca30c;   /* status good */
-  --color-warn:    #fab219;
+  /* Alpha lifts (replaces the old hardcoded bg-white/[0.0x]) */
+  --color-raise-1: var(--r-1);
+  --color-raise-2: var(--r-2);
+  --color-raise-3: var(--r-3);
+
+  /* Data-class colors — validated CVD-safe pair, per mode */
+  --color-class-a: var(--d-a);
+  --color-class-b: var(--d-b);
+
+  /* Status — reserved, never reused as a series color */
+  --color-ok:     var(--st-ok);
+  --color-warn:   var(--st-warn);
+  --color-danger: var(--st-danger);
 
   /* Hairlines */
-  --color-line:      rgba(255,255,255,0.08);
-  --color-line-soft: rgba(255,255,255,0.05);
-  --color-line-hard: rgba(255,255,255,0.14);
+  --color-line:      var(--ln);
+  --color-line-soft: var(--ln-soft);
+  --color-line-hard: var(--ln-hard);
 
   /* Type */
   --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -47,10 +71,166 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   §2  BASE
+   §2  DARK — ABYSS base (default)
+   contrast measured against #131a2a page / #16243a card
    ───────────────────────────────────────────────────────────── */
-:root { color-scheme: dark; }
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
 
+  --s-page:   #131a2a;  /* ABYSS    */
+  --s-sunk:   #16202f;
+  --s-card:   #16243a;  /* ATLANTIC */
+  --s-raised: #1b2c45;
+  --s-top:    #12304a;  /* PETROL   */
+
+  --t-primary:   #dfe9e8;  /* 14.03 AAA */
+  --t-secondary: #a7bcc0;  /*  8.77 AAA */
+  --t-muted:     #8399a0;  /*  5.81 AA  */
+  --t-faint:     #5f7480;  /*  3.55 — decorative glyphs only */
+
+  --a-base: #2a8f93;  /* TEAL      */
+  --a-text: #45a9a9;  /* TURQUOISE  6.21 AA on page */
+  --a-deep: #0c6c80;  /* PEACOCK   */
+  --a-on:   #131a2a;  /* abyss on turquoise = 6.21 AA */
+
+  --r-1: rgba(169, 216, 216, 0.045);
+  --r-2: rgba(169, 216, 216, 0.075);
+  --r-3: rgba(169, 216, 216, 0.115);
+
+  /* validator: ALL CHECKS PASS on #131a2a
+     (protan ΔE 12.6 · tritan 31.9 · normal 26.9) */
+  --d-a: #0fa4b4;
+  --d-b: #e66767;
+
+  --st-ok:     #3ddc84;  /* 9.74 AAA */
+  --st-warn:   #f5a524;  /* 8.51 AAA */
+  --st-danger: #e5484d;  /* 4.44      */
+
+  --ln:      rgba(169, 216, 216, 0.12);
+  --ln-soft: rgba(169, 216, 216, 0.07);
+  --ln-hard: rgba(169, 216, 216, 0.22);
+
+  --grid-line: rgba(169, 216, 216, 0.028);
+  --glow:      rgba(15, 164, 180, 0.11);
+  --grad-from: #f2f8f7;
+  --grad-to:   #7aab9e;  /* LAGOON */
+  --grain-op:  0.35;
+  --bar-track: rgba(169, 216, 216, 0.10);
+  --sb-thumb:  #24405c;
+  --sb-hover:  #2e5170;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   §3  LIGHT — AQUA base
+   contrast measured against #a9d8d8 page / #eef6f4 card
+
+   Two constraints the numbers forced, worth knowing before editing:
+   · TEAL (2.48) and TURQUOISE (1.80) both FAIL as text on Aqua, so
+     light-mode text comes only from the abyss/petrol/deep end.
+   · No two palette steps give usable card-vs-page separation
+     (best is 1.28), so cards go LIGHTER than the page (1.42) and
+     lean on hairlines rather than a second palette step.
+   ───────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --s-page:   #a9d8d8;  /* AQUA */
+  --s-sunk:   #9ed0d0;
+  --s-card:   #eef6f4;  /* 1.42 lift over page */
+  --s-raised: #f5fbf9;
+  --s-top:    #ffffff;
+
+  --t-primary:   #131a2a;  /* ABYSS   11.17 AAA on page / 15.82 on card */
+  --t-secondary: #12304a;  /* PETROL   8.73 AAA */
+  --t-muted:     #2c5566;  /*          5.20 AA on page / 7.36 on card */
+  --t-faint:     #42636c;  /*          4.18 — decorative glyphs only */
+
+  --a-base: #0c6c80;  /* PEACOCK — white sits on it at 6.05 AA */
+  --a-text: #0a5f70;  /*          4.68 AA on page */
+  --a-deep: #12304a;
+  --a-on:   #ffffff;  /* 6.05 AA on peacock */
+
+  /* light mode lifts also go toward white — the card is lighter than the page */
+  --r-1: rgba(255, 255, 255, 0.42);
+  --r-2: rgba(255, 255, 255, 0.62);
+  --r-3: rgba(255, 255, 255, 0.82);
+
+  /* validator: ALL CHECKS PASS on #eef6f4
+     (deutan ΔE 16.1 · tritan 33.4 · normal 28.6) */
+  --d-a: #0fa4b4;
+  --d-b: #c0463f;
+
+  --st-ok:     #0a7a2e;  /* 3.52 — ships with icon + label, never colour alone */
+  --st-warn:   #8a5a00;  /* 3.81 */
+  --st-danger: #b3282d;  /* 4.14 */
+
+  --ln:      rgba(19, 26, 42, 0.14);
+  --ln-soft: rgba(19, 26, 42, 0.08);
+  --ln-hard: rgba(19, 26, 42, 0.26);
+
+  --grid-line: rgba(19, 26, 42, 0.045);
+  --glow:      rgba(12, 108, 128, 0.13);
+  --grad-from: #0b1320;
+  --grad-to:   #0c6c80;
+  --grain-op:  0.14;
+  --bar-track: rgba(19, 26, 42, 0.10);
+  --sb-thumb:  #7bb8b8;
+  --sb-hover:  #5da3a3;
+}
+
+/* Follow the OS when the visitor has not chosen explicitly.
+   Same declarations as [data-theme="light"] — kept in sync by hand
+   because a CSS-only @media block cannot reuse a selector's body. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+
+    --s-page:   #a9d8d8;
+    --s-sunk:   #9ed0d0;
+    --s-card:   #eef6f4;
+    --s-raised: #f5fbf9;
+    --s-top:    #ffffff;
+
+    --t-primary:   #131a2a;
+    --t-secondary: #12304a;
+    --t-muted:     #2c5566;
+    --t-faint:     #42636c;
+
+    --a-base: #0c6c80;
+    --a-text: #0a5f70;
+    --a-deep: #12304a;
+    --a-on:   #ffffff;
+
+    --r-1: rgba(255, 255, 255, 0.42);
+    --r-2: rgba(255, 255, 255, 0.62);
+    --r-3: rgba(255, 255, 255, 0.82);
+
+    --d-a: #0fa4b4;
+    --d-b: #c0463f;
+
+    --st-ok:     #0a7a2e;
+    --st-warn:   #8a5a00;
+    --st-danger: #b3282d;
+
+    --ln:      rgba(19, 26, 42, 0.14);
+    --ln-soft: rgba(19, 26, 42, 0.08);
+    --ln-hard: rgba(19, 26, 42, 0.26);
+
+    --grid-line: rgba(19, 26, 42, 0.045);
+    --glow:      rgba(12, 108, 128, 0.13);
+    --grad-from: #0b1320;
+    --grad-to:   #0c6c80;
+    --grain-op:  0.14;
+    --bar-track: rgba(19, 26, 42, 0.10);
+    --sb-thumb:  #7bb8b8;
+    --sb-hover:  #5da3a3;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   §4  BASE
+   ───────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
   background: var(--color-ink-900);
@@ -67,7 +247,16 @@ body {
   overflow-x: hidden;
 }
 
-::selection { background: var(--color-accent); color: #fff; }
+/* Colour-only transition on the flip. Excluded from the reduced-motion
+   block below on purpose: a cross-fade between themes is a colour change,
+   not motion, and it reduces the flash. */
+html.theme-anim,
+html.theme-anim body {
+  transition: background-color 0.28s var(--ease-out-expo),
+              color 0.28s var(--ease-out-expo);
+}
+
+::selection { background: var(--color-accent); color: var(--color-on-accent); }
 
 /* Blueprint grid + soft aurora, fixed behind everything */
 body::before {
@@ -76,8 +265,8 @@ body::before {
   inset: 0;
   z-index: -2;
   background-image:
-    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 100% 70% at 50% 0%, #000 40%, transparent 100%);
   pointer-events: none;
@@ -89,7 +278,7 @@ body::after {
   width: 900px; height: 700px;
   transform: translateX(-50%);
   z-index: -2;
-  background: radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 62%);
+  background: radial-gradient(circle, var(--glow) 0%, transparent 62%);
   filter: blur(30px);
   pointer-events: none;
 }
@@ -101,13 +290,13 @@ body::after {
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: var(--grain-op);
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 /* ─────────────────────────────────────────────────────────────
-   §3  FOCUS / A11Y
+   §5  FOCUS / A11Y
    ───────────────────────────────────────────────────────────── */
 :focus { outline: none; }
 :focus-visible {
@@ -123,7 +312,7 @@ body::after {
   z-index: 100;
   padding: 0.6rem 1.2rem;
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
   font-size: 0.85rem;
   font-weight: 600;
   border-radius: 0 0 10px 10px;
@@ -132,7 +321,7 @@ body::after {
 .skip-link:focus { transform: translate(-50%, 0); }
 
 /* ─────────────────────────────────────────────────────────────
-   §4  SHARED PRIMITIVES
+   §6  SHARED PRIMITIVES
    ───────────────────────────────────────────────────────────── */
 /* Pointer-tracked spotlight for cards (co-ordinates set in JS) */
 .spotlight { position: relative; }
@@ -147,7 +336,7 @@ body::after {
   transition: opacity 0.4s ease;
   background: radial-gradient(
     380px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(139,92,246,0.14), transparent 62%
+    var(--glow), transparent 62%
   );
 }
 .spotlight:hover::before { opacity: 1; }
@@ -164,7 +353,7 @@ body::after {
 
 /* Gradient headline text */
 .grad-text {
-  background: linear-gradient(180deg, #fff 0%, #b7b7c4 100%);
+  background: linear-gradient(180deg, var(--grad-from) 0%, var(--grad-to) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -193,7 +382,7 @@ body::after {
 @keyframes scan { to { background-position: 0 -200%; } }
 
 /* ─────────────────────────────────────────────────────────────
-   §5  REDUCED MOTION  (honor OS setting globally)
+   §7  REDUCED MOTION  (honor OS setting globally)
    ───────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -211,8 +400,8 @@ body::after {
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--color-ink-900); }
 ::-webkit-scrollbar-thumb {
-  background: #26262c;
+  background: var(--sb-thumb);
   border-radius: 10px;
   border: 2px solid var(--color-ink-900);
 }
-::-webkit-scrollbar-thumb:hover { background: #34343c; }
+::-webkit-scrollbar-thumb:hover { background: var(--sb-hover); }

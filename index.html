@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Livjot Singh Bedi — AI/ML Engineer</title>
     <meta name="description" content="Final-year B.Tech CSE (AI/ML) student at Chandigarh University. Computer vision and NLP projects with their methods and limits documented, plus a neural network that trains live in your browser. Available for freelance ML work.">
-    <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#08080a">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#131a2a" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#a9d8d8" media="(prefers-color-scheme: light)">
+
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="Livjot Singh Bedi — AI/ML Engineer">
@@ -15,6 +17,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Applies a stored theme choice BEFORE first paint. Without this the
+         dark defaults in :root would flash for one frame on a light load.
+         Deliberately inline and synchronous — a module script would run too
+         late. If nothing is stored we leave data-theme off entirely so the
+         prefers-color-scheme block in index.css stays in charge. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-theme', t);
+          }
+        } catch (e) { /* private mode / storage disabled — fall back to the OS */ }
+      })();
+    </script>
 </head>
 <body>
     <div id="root"></div>
